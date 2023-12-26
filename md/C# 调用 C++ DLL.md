@@ -1,15 +1,5 @@
 > 本文由 [简悦 SimpRead](http://ksria.com/simpread/) 转码， 原文地址 [mp.weixin.qq.com](https://mp.weixin.qq.com/s/eUos92-heTjMVK7pfX5sNw)
 
-点击上方蓝字 江湖评谈设为关注
-
-  
-
-  
-
-  
-
-![](https://mmbiz.qpic.cn/mmbiz_png/mExTBLh5zaXJ2ia57dFKsEmQ5OBztgLHiasbicLqHR1icpibJqjg31Fx1OMSELoy7DZictMHuxE0Y7iaf0WJaibfHIrI2g/640?&wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
-
 **前言**
 
 很多人说，C# 底层太难了，今天搞个简单点的。看下如何通过最简单的方式 C# 调用 C++ 写的 DLL。以 VS2022 为蓝本。  
