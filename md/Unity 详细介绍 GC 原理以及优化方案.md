@@ -1,3 +1,5 @@
+### Unity 详细介绍 GC 原理以及优化方案
+
 > 本文由 [简悦 SimpRead](http://ksria.com/simpread/) 转码， 原文地址 [mp.weixin.qq.com](https://mp.weixin.qq.com/s/w9LQiqqigHtlzo1PEULyqQ)
 
     在 Unity 游戏开发中，GC（垃圾回收）主要是为了自动管理内存，释放那些不再使用的对象所占的内存。当你在 Unity 中创建一个新的对象，如一个新的类、数组、列表或游戏对象，这需要占用部分内存。当这些对象不再被使用，例如从场景中移除、设置为 null、超出其活动范围等，它们就成为了 "垃圾"，需要被清理。这个自动清理无用对象的过程就是垃圾回收。
