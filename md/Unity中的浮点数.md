@@ -1,14 +1,15 @@
 > 本文由 [简悦 SimpRead](http://ksria.com/simpread/) 转码， 原文地址 [mp.weixin.qq.com](https://mp.weixin.qq.com/s/hjVNVJwXBLgzD1M-9rO2uw)
 
 Unity   float f =0.1f 为什么 $"{f}" 输出的时候会是 0.100000001
-    
-    C# 中的 $"{}" 是一个字符串插补（String Interpolation）的语法糖，用于方便地创建和修改字符串。
+```c#
+C# 中的 $"{}" 是一个字符串插补（String Interpolation）的语法糖，用于方便地创建和修改字符串。
+```
 
     在 $"{}" 的 {} 里面，我们可以直接放入变量，或者一些表达式。编译器会自动将其替换为相应的字符串。
 
     这是一个非常有用的特性，它使得拼接和格式化字符串更加简单直观。例如，我们可以非常方便地在字符串中插入变量的值：
 
-```
+```c#
 int age = 20;
 string name = "John";
 string result = $"Hello, my name is {name} and I am {age} years old.";
@@ -16,7 +17,7 @@ string result = $"Hello, my name is {name} and I am {age} years old.";
 
     你可以在 {} 中放入变量, 编译器会将其替换成变量的值。但是，如果你在这个过程中遇到精度丢失，那可能是浮点数的精度问题。在 C#中，float 是 32 位的，能够精确到 7 位，而 double 是 64 位的，能精确到 15 位。这些都是不完全准确的，因为这些类型在内部是以二进制的形式存储的，只有某些十进制小数可以精确地转换为二进制小数。因此，在存储或转换时，可能会有一些轻微的舍入错误。
 
-```
+```c#
 float f = 0.1f;
 Console.WriteLine($"{f}");//0.100000001
 ```
@@ -56,7 +57,7 @@ Console.WriteLine($"{f}");//0.100000001
 
     在涉及到需要高精度的计算或表示时你应该用 decimal 类型。另外，如果只是在输出的时候遇到了这种情况，你可以考虑格式化输出，比如用 "F2" 保留两位小数：
 
-```
+```c#
 float f = 0.1f;
 Console.WriteLine($"{f:F2}");
 ```
