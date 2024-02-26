@@ -1,12 +1,6 @@
 > 本文由 [简悦 SimpRead](http://ksria.com/simpread/) 转码， 原文地址 [mp.weixin.qq.com](https://mp.weixin.qq.com/s?__biz=Mzg2MjUzMzcyOA==&mid=2247484153&idx=1&sn=b128a3bc8df7bb4577a18ab3db65a1ec&chksm=ce0723f6f970aae0367088ad9f80b6cdf1d06d0b9bfdab7afbfadb6572e47a0e90cbd214fa76&scene=21#wechat_redirect)
 
-![](https://mmbiz.qpic.cn/sz_mmbiz_gif/NSzqcbtSiakliaMmzwA0sMcTicuzVbK2GwTtAHaS9f4icdB4icoST15XvPeK6e1b72SZIIryyprrKtRZngiaqDXrHPgQ/640?wx_fmt=gif&from=appmsg)
-
-**点击蓝字，关注我们**
-
-![](https://mmbiz.qpic.cn/sz_mmbiz_png/NSzqcbtSiakliaMmzwA0sMcTicuzVbK2GwTg2fl79RvhUicRYh5vqReTGBLcBwOaa8nwm2X8TYKL8pbsM8J61gh4icw/640?wx_fmt=png&from=appmsg)
-
-**场景管理中心：Unity 中的基本框架之一**
+#### **场景管理中心：Unity 中的基本框架之一**
 
 在游戏开发中，场景管理是至关重要的一环。它直接影响着游戏的流畅性和用户体验。在 Unity 中，我们可以通过创建一个简单而有效的场景管理器框架来实现这一功能。
 
@@ -14,8 +8,60 @@
 
 下面是一个基本的场景管理器框架示例：
 
-```
-using System.Collections;using UnityEngine;using UnityEngine.Events;using UnityEngine.SceneManagement;namespace Core{    public class SceneManager    {        // 初始化场景管理器        public static void Init()        {            Debug.Log("场景管理器初始化完成...");        }        /// <summary>        /// 同步加载场景        /// </summary>        /// <param >场景加载完成后的回调</param>        public static void LoadScene(string sceneName, UnityAction onSceneLoaded = null)        {            UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);            onSceneLoaded?.Invoke();        }        /// <summary>        /// 异步加载场景        /// </summary>        /// <param >场景加载完成后的回调</param>        public static void LoadSceneAsync(string sceneName, UnityAction<float> onProgress = null, UnityAction onSceneLoaded = null)        {            MonoProxy.Instance.StartCoroutine(LoadSceneAsyncCoroutine(sceneName, onProgress, onSceneLoaded));        }        private static IEnumerator LoadSceneAsyncCoroutine(string sceneName, UnityAction<float> onProgress, UnityAction onSceneLoaded)        {            AsyncOperation asyncOperation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneName);            while (!asyncOperation.isDone)            {                // 如果需要，可以通过回调函数返回加载进度                onProgress?.Invoke(asyncOperation.progress);                yield return null;            }            // 场景加载完成后执行回调            onSceneLoaded?.Invoke();        }    }}
+```c#
+using System.Collections;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.SceneManagement;
+
+namespace Core
+{
+    public class SceneManager
+    {
+        // 初始化场景管理器
+        public static void Init()
+        {
+            Debug.Log("场景管理器初始化完成...");
+        }
+
+        /// <summary>
+        /// 同步加载场景
+        /// </summary>
+        /// <param name="sceneName">场景名称</param>
+        /// <param name="onSceneLoaded">场景加载完成后的回调</param>
+        public static void LoadScene(string sceneName, UnityAction onSceneLoaded = null)
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
+            onSceneLoaded?.Invoke();
+        }
+
+        /// <summary>
+        /// 异步加载场景
+        /// </summary>
+        /// <param name="sceneName">场景名称</param>
+        /// <param name="onProgress">加载进度更新回调</param>
+        /// <param name="onSceneLoaded">场景加载完成后的回调</param>
+        public static void LoadSceneAsync(string sceneName, UnityAction<float> onProgress = null, UnityAction onSceneLoaded = null)
+        {
+            MonoProxy.Instance.StartCoroutine(LoadSceneAsyncCoroutine(sceneName, onProgress, onSceneLoaded));
+        }
+
+        private static IEnumerator LoadSceneAsyncCoroutine(string sceneName, UnityAction<float> onProgress, UnityAction onSceneLoaded)
+        {
+            AsyncOperation asyncOperation = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(sceneName);
+
+            while (!asyncOperation.isDone)
+            {
+                // 如果需要，可以通过回调函数返回加载进度
+                onProgress?.Invoke(asyncOperation.progress);
+                yield return null;
+            }
+
+            // 场景加载完成后执行回调
+            onSceneLoaded?.Invoke();
+        }
+    }
+}
 ```
 
 以上代码实现了一个基本的场景管理器框架，直接使用声明为静态方法来让场景管理器实现单例设计模式（也可以继承单例框架，具体可以看我主页的单例模式框架），具备同步和异步加载场景的功能。因为此场景管理器并未继承 Mono，所以需要使用 Mono 管理器（继承 Mono 的 Mono 管理器）的实例来启动协程。下面是对代码的简要解释：
@@ -33,8 +79,37 @@ using System.Collections;using UnityEngine;using UnityEngine.Events;using Un
 
 以下为场景管理器的使用示例：
 
-```
-using UnityEngine;public class ExampleSceneLoader : MonoBehaviour{    void Start()    {        // 初始化场景管理器        Core.SceneManager.Init();        // 同步加载场景        Core.SceneManager.LoadScene("YourSceneName", OnSceneLoaded);        // 异步加载场景        Core.SceneManager.LoadSceneAsync("YourSceneName", OnProgressUpdate, OnSceneLoaded);    }    // 场景加载完成后的回调    private void OnSceneLoaded()    {        Debug.Log("场景加载完成！");        // 在这里可以执行场景加载完成后的逻辑    }    // 场景加载进度更新回调    private void OnProgressUpdate(float progress)    {        Debug.Log("加载进度：" + (int)(progress * 100) + "%");        // 在这里可以更新加载进度条等UI    }}
+```c#
+using UnityEngine;
+
+public class ExampleSceneLoader : MonoBehaviour
+{
+    void Start()
+    {
+        // 初始化场景管理器
+        Core.SceneManager.Init();
+
+        // 同步加载场景
+        Core.SceneManager.LoadScene("YourSceneName", OnSceneLoaded);
+
+        // 异步加载场景
+        Core.SceneManager.LoadSceneAsync("YourSceneName", OnProgressUpdate, OnSceneLoaded);
+    }
+
+    // 场景加载完成后的回调
+    private void OnSceneLoaded()
+    {
+        Debug.Log("场景加载完成！");
+        // 在这里可以执行场景加载完成后的逻辑
+    }
+
+    // 场景加载进度更新回调
+    private void OnProgressUpdate(float progress)
+    {
+        Debug.Log("加载进度：" + (int)(progress * 100) + "%");
+        // 在这里可以更新加载进度条等UI
+    }
+}
 ```
 
 *   在 **Start()** 方法中，首先初始化了场景管理器 **Core.SceneManager.Init()**。
