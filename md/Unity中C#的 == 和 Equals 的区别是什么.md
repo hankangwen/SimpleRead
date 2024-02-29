@@ -1,11 +1,5 @@
 > 本文由 [简悦 SimpRead](http://ksria.com/simpread/) 转码， 原文地址 [mp.weixin.qq.com](https://mp.weixin.qq.com/s?__biz=Mzg2MjUzMzcyOA==&mid=2247484127&idx=1&sn=0353a566bc7bec28d5866ba4cdcd96cf&chksm=ce0723d0f970aac68b201c55b770c9c2f72c53fc78b025bbc02c5ca4ebce3102272d48dbf46b&scene=178&cur_album_id=3242994881078460418#rd)
 
-![](https://mmbiz.qpic.cn/sz_mmbiz_gif/NSzqcbtSiakn54zkibzPHiaicicrdaOnTjQsGPP9R9Zo9HVm75nbXF1bGvMxdKj22S73URiakZTSB8hAZorNib7Ef0pDQ/640?wx_fmt=gif&from=appmsg)
-
-**点击蓝字，关注我们**
-
-![](https://mmbiz.qpic.cn/sz_mmbiz_png/NSzqcbtSiakn54zkibzPHiaicicrdaOnTjQsGicPcbgmARcxibsxamQHrdsKEz5tibSgw6Pw0ldDwibCGZz2SJ2FgCIoNOg/640?wx_fmt=png&from=appmsg)
-
 **C# 中 == 和 Equals 的区别是什么**
 
 **值类型：**
@@ -36,8 +30,26 @@ c# 的许多引用类型都已经重写了 Equals 方法，以便根据对象的
 
 例如，假设我们有一个自定义的 Person 类：
 
-```
-public class Person{    public string Name { get; set; }    public int Age { get; set; }    public override bool Equals(object obj)    {        if (obj == null || GetType() != obj.GetType())            return false;        Person otherPerson = (Person)obj;        return Name == otherPerson.Name && Age == otherPerson.Age;    }    public override int GetHashCode()    {        return HashCode.Combine(Name, Age);    }}
+```c#
+public class Person
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+
+    public override bool Equals(object obj)
+    {
+        if (obj == null || GetType() != obj.GetType())
+            return false;
+
+        Person otherPerson = (Person)obj;
+        return Name == otherPerson.Name && Age == otherPerson.Age;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Name, Age);
+    }
+}
 ```
 
 在上述代码中，我们重写了 Person 类的 Equals 方法和 GetHashCode 方法来实现根据 Name 和 Age 属性来比较两个 Person 对象的相等性。
