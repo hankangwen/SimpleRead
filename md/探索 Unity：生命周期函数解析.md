@@ -1,5 +1,7 @@
 > 本文由 [简悦 SimpRead](http://ksria.com/simpread/) 转码， 原文地址 [mp.weixin.qq.com](https://mp.weixin.qq.com/s?__biz=Mzg2MjUzMzcyOA==&mid=2247483949&idx=1&sn=c6e403effe6ed01f860e27cc6fed4ab8&chksm=ce072322f970aa34bab2f5b7f5793be98a28450b200c9335a600061dfd21d366bf145d50daff&scene=178&cur_album_id=3218021275236007937#rd)
 
+#### Unity生命周期函数解析
+
 Unity 生命周期函数是在游戏对象的不同阶段被调用的方法，通过这些函数，我们可以在不同的时刻执行特定的代码。在这篇文章中，我们将一步步解析 Unity 生命周期函数，分为不同阶段来理解它们的作用。
 
 [事件函数的执行顺序 - Unity 手册 (unity3d.com)](https://docs.unity3d.com/cn/2022.3/Manual/ExecutionOrder.html#ScriptLifecycleFlowchart)
