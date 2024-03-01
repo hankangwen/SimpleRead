@@ -16,6 +16,17 @@ c# 的许多引用类型都已经重写了 Equals 方法，以便根据对象的
 
 集合类型（如 List、Dictionary 等）。
 
+```c#
+// String.cs
+public static bool operator ==(string a, string b) => string.Equals(a, b);
+在String中， == 和 Equals 是一样的，都是比较字符串的值。
+string a = "EqualsExample";
+string b = "EqualsExample";
+Debug.Log($"{a == b} {a.Equals(b)}");//True True
+```
+
+
+
 如果我们自定义一个类，并且没有重写 Equals 方法，那么该类的对象在使用 Equals 方法进行比较时，默认情况下会比较它们的引用，而不是内容。
 
 **重写 Equals**
