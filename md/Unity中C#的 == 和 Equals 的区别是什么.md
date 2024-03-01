@@ -23,6 +23,34 @@ public static bool operator ==(string a, string b) => string.Equals(a, b);
 string a = "EqualsExample";
 string b = "EqualsExample";
 Debug.Log($"{a == b} {a.Equals(b)}");//True True
+
+//List
+List<string> strList1 = new List<string>(3);
+List<string> strList2 = new List<string>();
+strList1.Add("1");
+strList2.Add("1");
+strList1.Add("2");
+strList2.Add("2");
+strList1.Add("3");
+strList2.Add("3");
+bool bA = strList1 == strList2;
+bool bB = strList1.SequenceEqual(strList2);
+Debug.Log($"{bA} {bB}");// False True  
+Debug.Log($"{strList1 == strList2} {strList1.Equals(strList2)}");// False False
+
+//Dictionary
+Dictionary<int, string> aDict = new Dictionary<int, string>(3);
+Dictionary<int, string> bDict = new Dictionary<int, string>();
+aDict.Add(1, "1");
+bDict.Add(1, "1");
+aDict.Add(2, "2");
+bDict.Add(2, "2");
+aDict.Add(3, "3");
+bDict.Add(3, "3");
+bool bA = aDict == bDict;
+bool bB = aDict.Equals(bDict);
+bool bC = aDict.SequenceEqual(bDict);
+Debug.Log($"{bA} {bB} {bC}");//False False True
 ```
 
 
