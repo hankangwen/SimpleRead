@@ -1,16 +1,6 @@
 > 本文由 [简悦 SimpRead](http://ksria.com/simpread/) 转码， 原文地址 [mp.weixin.qq.com](https://mp.weixin.qq.com/s?__biz=Mzg2MjUzMzcyOA==&mid=2247483954&idx=1&sn=051b38248e2828bdba87b36203f53274&chksm=ce07233df970aa2b362fc51885279ec83edc67acbdb3205776b50f1daa88ffaea8d164d5186e&scene=178&cur_album_id=3218779881132752901#rd)
 
- 
-
-![](https://mmbiz.qpic.cn/sz_mmbiz_gif/x1GdDQIialVo8Vp34f3mvmbWG4l31ClqPpaBziaicBo1RM2juA1S8r7RTtqp3gqPJw3SXjACRGUQAjTW6Zqc7K33A/640)
-
-**点击蓝字，关注我们**
-
-![](https://mmbiz.qpic.cn/sz_mmbiz_png/JzT3Hy1ZmiaSLzNsD4vMIGbWoNTich9qKSRSLNA8ZMBAuaIqgnG6bCW0KNfO1h1V8wbkCJPsvbGj9hKh6Igd1kbQ/640)
-
-本期来讲讲 unity 的脚本语言 ---C#，C# 的简单数据类型及范围和强制类型转化的方法。这可是 unity 游戏开发必备技能。
-
-  
+ 本期来讲讲 unity 的脚本语言 ---C#，C# 的简单数据类型及范围和强制类型转化的方法。这可是 unity 游戏开发必备技能。
 
 **1. 简单数据类型**
 
@@ -80,7 +70,7 @@
 
 在变量前加上 (类型)
 
-```
+```c#
 int num;
 char c='A';
 num=(int)c;
@@ -98,7 +88,7 @@ bool 和 string 不能和其他类型进行强制转换
 
 变量类型. Parse("字符串")；
 
-```
+```c#
 int num=int.Parse("123");
 ```
 
@@ -112,7 +102,7 @@ int num=int.Parse("123");
 
 Convert.To 目标类型 (变量或常量)
 
-```
+```c#
 int a =Convert.ToInt32("12");
 
 a=Convert.ToInt32(1.5556f);//a变成2，会四舍五入
@@ -135,8 +125,6 @@ decimal de=Convert.ToDecimal("13.4");
 bool bo=Convert.ToBoolean("true");
 char c=Convert.ToChar("A");
 
-
-
 string str=Convert.ToString(1000);
 ```
 
@@ -146,11 +134,10 @@ string str=Convert.ToString(1000);
 
 变量. ToString();
 
-```
+```c#
 string str=1.ToString();
 str='A'.ToString();
 int a=20;
 str=a.ToString();//str为"20"
 ```
 
-如有错误欢迎指正！
