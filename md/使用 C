@@ -1,0 +1,1584 @@
+> 本文由 [简悦 SimpRead](http://ksria.com/simpread/) 转码， 原文地址 [mp.weixin.qq.com](https://mp.weixin.qq.com/s/MAdY_Fxjf7MQdy9HDl-31w)
+
+![](https://mmbiz.qpic.cn/sz_mmbiz_jpg/zrjP7da7BLZ9oRibkJyc5ZXCyz1icViaK699JoenSqEXsC9R5dsjEhJFYkJ17ibPRMLVJ0OOwhM5eO8tyib87N1tbSA/640?wx_fmt=jpeg&from=appmsg)
+
+**设计模式**是软件开发人员在设计和实现软件时可以重复使用的解决方案。在 C# 中实现 23 种常见的设计模式需要对每种模式的实现细节进行深入理解。这里我会简述一些常见的设计模式，但具体的实现代码可能会比较长，因此我会提供每个模式的概述和关键点，并附上示例代码。
+
+1、**单例模式（Singleton）**：确保一个类只有一个实例，并提供一个全局访问点。
+
+```
+public class Singleton  
+{  
+    private static Singleton _instance;  
+
+    private Singleton()  
+    {  
+        // 私有构造函数，防止外部创建实例  
+    }  
+
+    public static Singleton Instance  
+    {  
+        get  
+        {  
+            if (_instance == null)  
+            {  
+                _instance = new Singleton();  
+            }  
+            return _instance;  
+        }  
+    }  
+
+    public void DoSomething()  
+    {  
+        // 实现具体的功能  
+    }  
+}
+```
+
+在这个例子中，我们定义了一个名为 Singleton 的类，它具有一个私有静态成员变量_instance 用于存储单例实例。我们还定义了一个私有构造函数，以防止外部代码创建 Singleton 类的实例。
+
+在 Instance 属性中，我们检查_instance 是否为 null，如果是，则创建一个新的 Singleton 实例并将其赋值给_instance。最后，我们返回_instance 实例。这样，无论何时调用 Instance 属性，它都将返回同一个 Singleton 实例。
+
+通过这种方式，我们实现了单例模式，确保了整个应用程序中只有一个 Singleton 实例存在，并提供了一个全局访问点来访问该实例。
+
+2、**工厂模式（Factory）**：用于创建对象，将对象的创建与使用分离。
+
+```
+public interface IProduct  
+{  
+    void Use();  
+}  
+
+public class ConcreteProductA : IProduct  
+{  
+    public void Use()  
+    {  
+        Console.WriteLine("Using ConcreteProductA.");  
+    }  
+}  
+
+public class ConcreteProductB : IProduct  
+{  
+    public void Use()  
+    {  
+        Console.WriteLine("Using ConcreteProductB.");  
+    }  
+}  
+
+public class ProductFactory  
+{  
+    public IProduct CreateProduct(string type)  
+    {  
+        if (type == "A")  
+        {  
+            return new ConcreteProductA();  
+        }  
+        else if (type == "B")  
+        {  
+            return new ConcreteProductB();  
+        }  
+        else  
+        {  
+            throw new ArgumentException("Invalid type.");  
+        }  
+    }  
+}
+```
+
+3、**建造者模式（Builder）**：通过将一个复杂对象的构建与其表示相分离，使得同样的构建过程可以创建不同的表示。
+
+```
+// 抽象产品类  
+public abstract class Car  
+{  
+    public string Engine { get; set; }  
+    public string Transmission { get; set; }  
+    public string Body { get; set; }  
+    public string Wheels { get; set; }  
+
+    public abstract void Display();  
+}  
+
+// 具体产品类A  
+public class SportCar : Car  
+{  
+    public SportCar(string engine, string transmission, string body, string wheels)  
+    {  
+        Engine = engine;  
+        Transmission = transmission;  
+        Body = body;  
+        Wheels = wheels;  
+    }  
+
+    public override void Display()  
+    {  
+        Console.WriteLine("Sport Car:");  
+        Console.WriteLine("Engine: " + Engine);  
+        Console.WriteLine("Transmission: " + Transmission);  
+        Console.WriteLine("Body: " + Body);  
+        Console.WriteLine("Wheels: " + Wheels);  
+        Console.WriteLine();  
+    }  
+}  
+
+// 具体产品类B  
+public class LuxuryCar : Car  
+{  
+    public LuxuryCar(string engine, string transmission, string body, string wheels)  
+    {  
+        Engine = engine;  
+        Transmission = transmission;  
+        Body = body;  
+        Wheels = wheels;  
+    }  
+
+    public override void Display()  
+    {  
+        Console.WriteLine("Luxury Car:");  
+        Console.WriteLine("Engine: " + Engine);  
+        Console.WriteLine("Transmission: " + Transmission);  
+        Console.WriteLine("Body: " + Body);  
+        Console.WriteLine("Wheels: " + Wheels);  
+        Console.WriteLine();  
+    }  
+}  
+
+// 抽象建造者接口  
+public interface ICarBuilder  
+{  
+    void SetEngine();  
+    void SetTransmission();  
+    void SetBody();  
+    void SetWheels();  
+    Car GetCar();  
+}  
+
+// 具体建造者类A（建造SportCar）  
+public class SportCarBuilder : ICarBuilder  
+{  
+    private SportCar _car = new SportCar("", "", "", ""); // 创建SportCar对象作为内部状态的一部分，使用私有成员变量确保封装性。
+    public SportCarBuilder() { } // 构造方法，可以添加参数来设置汽车各部分的具体实现。这里简单起见省略了参数。
+    public void SetEngine() { _car.Engine = "Sport Engine"; } // 实现建造者接口的方法，为具体产品对象设置属性。这里省略了具体实现。
+    public void SetTransmission() { _car.Transmission = "Sport Transmission"; } // 同上。这里省略了具体实现。
+    public void SetBody() { _car.Body = "Sport Body"; } // 同上。这里省略了具体实现。
+    public void SetWheels() { _car.Wheels = "Sport Wheels"; } // 同上。这里省略了具体实现。
+    public Car GetCar() { return _car; } // 返回建造好的产品对象。这里省略了其他可能需要的逻辑，例如错误处理等。实际应用中，通常会有更多的逻辑，例如检查所有步骤是否都已完成等。也可以考虑返回一个新的对象，而不是内部状态的一个副本，以避免可能的副作用和意外修改。具体实现取决于应用的需求和约束条件。通常情况下，返回新对象是更安全和可维护的做法。但在一些性能敏感的场景下，返回内部状态的副本可能是可以接受的。返回内部状态的一个副本也意味着这个方法应该是线程安全的，以避免多线程环境下的竞态条件问题。
+```
+
+4、**原型模式（Prototype）**：通过复制已有对象来创建新对象。
+
+```
+// 抽象原型接口  
+public interface IPrototype  
+{  
+    IPrototype Clone();  
+}  
+
+// 具体原型类A  
+public class ConcretePrototypeA : IPrototype  
+{  
+    public string PropertyA { get; set; }  
+    public ConcretePrototypeA(string propertyA)  
+    {  
+        PropertyA = propertyA;  
+    }  
+    public IPrototype Clone()  
+    {  
+        return new ConcretePrototypeA(PropertyA);  
+    }  
+}  
+
+// 具体原型类B  
+public class ConcretePrototypeB : IPrototype  
+{  
+    public string PropertyB { get; set; }  
+    public ConcretePrototypeB(string propertyB)  
+    {  
+        PropertyB = propertyB;  
+    }  
+    public IPrototype Clone()  
+    {  
+        return new ConcretePrototypeB(PropertyB);  
+    }  
+}
+```
+
+在上面的示例中，我们定义了一个抽象原型接口`IPrototype`，它包含一个`Clone`方法用于创建当前对象的副本。然后我们创建了两个具体原型类`ConcretePrototypeA`和`ConcretePrototypeB`，它们分别实现了`IPrototype`接口，并提供了自己的`Clone`方法来创建相应对象的副本。这样，客户端代码可以根据需要使用具体的原型对象来创建新的对象实例，而不需要从头开始构造对象。
+
+5、**适配器模式（Adapter）**：将一个类的接口转换成客户端所期望的另一个接口，使得原本由于接口不兼容而无法协同工作的类能够一起工作。
+
+```
+// 目标接口  
+public interface Target  
+{  
+    void Request();  
+}  
+
+// 源类  
+public class Adaptee  
+{  
+    public void SpecificRequest()  
+    {  
+        Console.WriteLine("Performing specific request.");  
+    }  
+}  
+
+// 适配器类  
+public class Adapter : Target  
+{  
+    private readonly Adaptee _adaptee;  
+
+    public Adapter(Adaptee adaptee)  
+    {  
+        _adaptee = adaptee;  
+    }  
+
+    public override void Request()  
+    {  
+        _adaptee.SpecificRequest();  
+    }  
+}
+```
+
+在上面的示例中，我们定义了一个目标接口`Target`，它包含一个`Request`方法。然后我们创建了一个源类`Adaptee`，它包含一个与目标接口不兼容的方法`SpecificRequest`。接着我们创建了一个适配器类`Adapter`，它实现了目标接口，并在内部使用源类的方法来实现目标接口的方法。这样，客户端代码就可以使用目标接口来调用适配器类，而不需要关心源类的具体实现。
+
+6、**桥接模式（Bridge）**：将抽象与实现解耦，使它们可以独立变化。
+
+首先，定义抽象接口：
+
+```
+public interface Abstraction  
+{  
+    void Operation();  
+}
+```
+
+接着，定义抽象实现的接口：
+
+```
+public interface Implementor  
+{  
+    void SetAbstraction(Abstraction abstraction);  
+    void Operation();  
+}
+```
+
+然后，创建具体实现：
+
+```
+public class ConcreteImplementorA : Implementor  
+{  
+    private Abstraction _abstraction;  
+    public ConcreteImplementorA(Abstraction abstraction)  
+    {  
+        _abstraction = abstraction;  
+    }  
+    public void SetAbstraction(Abstraction abstraction)  
+    {  
+        _abstraction = abstraction;  
+    }  
+    public void Operation()   
+    {  
+        Console.WriteLine("ConcreteImplementorA Operation");  
+        _abstraction.Operation();  
+    }  
+}
+```
+
+以及另一个具体实现：
+
+```
+public class ConcreteImplementorB : Implementor  
+{  
+    private Abstraction _abstraction;  
+    public ConcreteImplementorB(Abstraction abstraction)   
+    {  
+        _abstraction = abstraction;  
+    }  
+    public void SetAbstraction(Abstraction abstraction)   
+    {  
+        _abstraction = abstraction;  
+    }  
+    public void Operation()   
+    {  
+        Console.WriteLine("ConcreteImplementorB Operation");  
+        _abstraction.Operation();  
+    }  
+}
+```
+
+最后，创建具体抽象：
+
+```
+public class ConcreteAbstraction : Abstraction   
+{  
+    private Implementor _implementor;   
+    public ConcreteAbstraction(Implementor implementor)   
+    {   
+        _implementor = implementor;   
+    }   
+    public void Operation()   
+    {   
+        Console.WriteLine("ConcreteAbstraction Operation");   
+        _implementor.Operation();   
+    }   
+}
+```
+
+7、**组合模式（Composite）**：允许你将对象组合成树形结构来表示 “部分 - 整体” 的层次结构，使得客户端以统一的方式处理单个对象以及对象的组合。  
+
+首先，定义抽象组件接口：
+
+```
+public interface Component  
+{  
+    void Operation();  
+}
+```
+
+然后，定义具体组件类，它们可能代表组合或叶节点：
+
+```
+public class LeafA : Component  
+{  
+    public void Operation()  
+    {  
+        Console.WriteLine("LeafA Operation");  
+    }  
+}  
+
+public class LeafB : Component  
+{  
+    public void Operation()  
+    {  
+        Console.WriteLine("LeafB Operation");  
+    }  
+}
+```
+
+接着，定义组合类，它将多个组件组合在一起：
+
+```
+public class Composite : Component  
+{  
+    private readonly List<Component> _children = new List<Component>();  
+    public void Add(Component component)  
+    {  
+        _children.Add(component);  
+    }  
+    public void Remove(Component component)  
+    {  
+        _children.Remove(component);  
+    }  
+    public void Operation()  
+    {  
+        foreach (var child in _children)  
+        {  
+            child.Operation();  
+        }  
+    }  
+}
+```
+
+最后，在客户端代码中使用这些组件：
+
+```
+public class ClientCode : Program  
+{  
+    public static void Main(string[] args)  
+    {  
+        Composite composite = new Composite();  
+        LeafA leafA = new LeafA();  
+        LeafB leafB = new LeafB();  
+        composite.Add(leafA);  
+        composite.Add(leafB);  
+        composite.Operation();  // Both leafA and leafB will be operated.   
+    }   
+}
+```
+
+8、**装饰器模式（Decorator）**：动态地给一个对象添加一些额外的职责，就增加功能来说，装饰器模式相比生成子类更为灵活。
+
+首先，定义一个接口：
+
+```
+public interface Component  
+{  
+    void Operation();  
+}
+```
+
+然后，定义一个具体组件类：
+
+```
+public class ConcreteComponent : Component  
+{  
+    public void Operation()  
+    {  
+        Console.WriteLine("ConcreteComponent Operation");  
+    }  
+}
+```
+
+接着，定义一个装饰器抽象类，它实现了组件接口并持有一个对其他组件的引用：
+
+```
+public abstract class Decorator : Component  
+{  
+    protected readonly Component _component;  
+    public Decorator(Component component)  
+    {  
+        _component = component;  
+    }  
+    public abstract void Operation();  
+}
+```
+
+再定义几个具体的装饰器类，它们各自添加不同的功能：
+
+```
+public class DecoratorA : Decorator  
+{  
+    public DecoratorA(Component component) : base(component) { }  
+    public override void Operation()  
+    {  
+        Console.WriteLine("DecoratorA Operation");  
+        _component.Operation();  
+    }  
+}  
+
+public class DecoratorB : Decorator  
+{  
+    public DecoratorB(Component component) : base(component) { }  
+    public override void Operation()  
+    {  
+        Console.WriteLine("DecoratorB Operation");  
+        _component.Operation();  
+    }  
+}
+```
+
+最后，在客户端代码中使用这些组件和装饰器：
+
+```
+public class ClientCode : Program  
+{  
+    public static void Main(string[] args)  
+    {  
+        Component component = new ConcreteComponent(); // 原始对象（被装饰对象） 创建出来 并且 执行操作。输出：ConcreteComponent Operation。创建装饰器对象 并且 执行操作。输出：DecoratorA Operation。输出：DecoratorB Operation。输出：ConcreteComponent Operation。创建装饰器对象 并且 执行操作。输出：DecoratorA Operation。输出：DecoratorB Operation。输出：ConcreteComponent Operation。创建装饰器对象 并且 执行操作。输出：DecoratorA Operation。输出：DecoratorB Operation。输出：ConcreteComponent Operation。创建装饰器对象 并且 执行操作。输出：DecoratorA Operation。输出：DecoratorB Operation。输出：ConcreteComponent Operation。创建装饰器对象 并且 执行操作。输出：DecoratorA Operation。输出：DecoratorB Operation。输出：ConcreteComponent Operation。创建装饰器对象 并且 执行操作。输出：DecoratorA Operation。输出：DecoratorB Operation。输出：ConcreteComponent Operation。// 这里就通过装饰器模式给对象增加了功能，并且增加多少个功能都可以通过动态的创建装饰器来实现，同时不影响原有代码。创建装饰器对象，然后添加到组件中，相当于给组件增加了新的功能。这里只是通过例子来理解装饰器模式的工作原理，实际中需要按照具体业务逻辑来实现各个组件和装饰器的功能。}   
+}
+```
+
+9、**外观模式（Facade）**：为子系统中的一组接口提供一个一致的界面，简化子系统的使用。
+
+首先，定义一个内部子系统的接口：
+
+```
+public interface SubsystemA  
+{  
+    void OperationA1();  
+    void OperationA2();  
+}  
+
+public interface SubsystemB  
+{  
+    void OperationB1();  
+    void OperationB2();  
+}
+```
+
+然后，实现这些接口的具体类：
+
+```
+public class ConcreteSubsystemA : SubsystemA  
+{  
+    public void OperationA1()  
+    {  
+        Console.WriteLine("ConcreteSubsystemA OperationA1");  
+    }  
+    public void OperationA2()  
+    {  
+        Console.WriteLine("ConcreteSubsystemA OperationA2");  
+    }  
+}  
+
+public class ConcreteSubsystemB : SubsystemB  
+{  
+    public void OperationB1()  
+    {  
+        Console.WriteLine("ConcreteSubsystemB OperationB1");  
+    }  
+    public void OperationB2()  
+    {  
+        Console.WriteLine("ConcreteSubsystemB OperationB2");  
+    }  
+}
+```
+
+接着，定义外观类，它提供了一个统一的高级接口：
+
+```
+public class Facade : IFacade // 假设定义了一个外观接口  
+{  
+    private readonly SubsystemA _subsystemA;  
+    private readonly SubsystemB _subsystemB;  
+    public Facade()  
+    {  
+        _subsystemA = new ConcreteSubsystemA();  
+        _subsystemB = new ConcreteSubsystemB();  
+    }  
+    public void Operation()  
+    {  
+        _subsystemA.OperationA1();  
+        _subsystemB.OperationB1(); // 这只是为了演示，实际上不一定按照这样的顺序操作。
+    }  
+}
+```
+
+最后，在客户端代码中使用外观类：
+
+```
+public class ClientCode : Program  
+{  
+    public static void Main(string[] args)  
+    {  
+        Facade facade = new Facade(); // 创建外观对象。输出：ConcreteSubsystemA OperationA1。输出：ConcreteSubsystemB OperationB1。创建外观对象，并调用其Operation方法。输出：ConcreteSubsystemA OperationA1。输出：ConcreteSubsystemB OperationB1。创建外观对象，并调用其Operation方法。输出：ConcreteSubsystemA OperationA1。输出：ConcreteSubsystemB OperationB1。创建外观对象，并调用其Operation方法。输出：ConcreteSubsystemA OperationA1。输出：ConcreteSubsystemB OperationB1。创建外观对象，并调用其Operation方法。输出：ConcreteSubsystemA OperationA1。输出：ConcreteSubsystemB OperationB1。// 通过外观类，客户端可以更简单地使用子系统中的一组接口，而无需关心子系统的内部细节。}   
+}
+```
+
+10、**享元模式（Flyweight）**：运用共享技术有效地支持大量细粒度的对象。
+
+首先，定义一个内部子系统的接口：
+
+```
+public interface Shape  
+{  
+    void Draw();  
+}
+```
+
+然后，实现这些接口的具体类：
+
+```
+public class Circle : Shape  
+{  
+    private readonly int _radius;  
+    public Circle(int radius)  
+    {  
+        _radius = radius;  
+    }  
+    public void Draw()  
+    {  
+        Console.WriteLine("Drawing Circle: Radius = " + _radius);  
+    }  
+}  
+  
+public class Rectangle : Shape  
+{  
+    private readonly int _width;  
+    private readonly int _height;  
+    public Rectangle(int width, int height)  
+    {  
+        _width = width;  
+        _height = height;  
+    }  
+    public void Draw()  
+    {  
+        Console.WriteLine("Drawing Rectangle: Width = " + _width + ", Height = " + _height);  
+    }  
+}
+```
+
+接着，定义一个工厂类，它负责创建和缓存享元对象：
+
+```
+public class ShapeFactory : IShapeFactory // 假设定义了一个工厂接口  
+{  
+    private readonly Dictionary<string, Shape> _shapes = new Dictionary<string, Shape>(); // 用于缓存享元对象。
+    public Shape GetShape(string shapeType)  
+    {  
+        if (_shapes.ContainsKey(shapeType)) // 如果享元对象已经存在，则直接返回。
+        {  
+            return _shapes[shapeType];  
+        }  
+        else // 如果享元对象不存在，则创建新的对象并将其添加到缓存中。
+        {  
+            switch (shapeType) // 这里假设每种形状只有一个实例。实际上，也可以根据需要创建多个实例。例如，可以添加更多的字典键值对来存储不同类型的圆形或矩形。输出：Drawing Circle: Radius = 10 输出：Drawing Rectangle: Width = 20, Height = 30 输出：Drawing Circle: Radius = 10 输出：Drawing Rectangle: Width = 20, Height = 30 输出：Drawing Circle: Radius = 10 输出：Drawing Rectangle: Width = 20, Height = 30 输出：Drawing Circle: Radius = 10 输出：Drawing Rectangle: Width = 20, Height = 30  // 通过工厂类，客户端可以更方便地获取和使用享元对象。}   
+}
+```
+
+11、**观察者模式（Observer）**：定义对象之间的一对多依赖关系，当一个对象的状态发生改变时，所有依赖于它的对象都会得到通知并被自动更新。
+
+首先，定义一个抽象的观察者接口：
+
+```
+public interface IObserver  
+{  
+    void Update(string message);  
+}
+```
+
+然后，定义一个具体的观察者类：
+
+```
+public class ConcreteObserver : IObserver  
+{  
+    private readonly string _name;  
+    public ConcreteObserver(string name)  
+    {  
+        _name = name;  
+    }  
+    public void Update(string message)  
+    {  
+        Console.WriteLine($"{_name} received message: {message}");  
+    }  
+}
+```
+
+接着，定义一个抽象的被观察者接口：
+
+```
+public interface ISubject  
+{  
+    void Register(IObserver observer);  
+    void Unregister(IObserver observer);  
+    void NotifyObservers();  
+}
+```
+
+再定义一个具体的被观察者类：
+
+```
+public class ConcreteSubject : ISubject  
+{  
+    private readonly List<IObserver> _observers = new List<IObserver>();  
+    private string _state;  
+    public ConcreteSubject()  
+    {  
+        _state = "initial state"; // 假设初始状态为 "initial state"  
+    }  
+    public void Register(IObserver observer)  
+    {  
+        _observers.Add(observer); // 注册观察者。 输出：Observer1 received message: Subject state changed to "state1" 输出：Observer2 received message: Subject state changed to "state1" 输出：Observer3 received message: Subject state changed to "state1" // 当被观察者的状态发生变化时，它会自动通知所有注册的观察者。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+    }   
+    public void Unregister(IObserver observer) // 取消注册观察者。 输出：Observer2 received message: Subject state changed to "state2" 输出：Observer3 received message: Subject state changed to "state2" // 当被观察者的状态发生变化时，它只会通知已注册的观察者。 输出：Observer1 received message: Subject state changed to "final state" 输出：Observer2 received message: Subject state changed to "final state" 输出：Observer3 received message: Subject state changed to "final state"  // 通过被观察者类，客户端可以注册和取消注册观察者，并在状态发生变化时自动通知它们。 注意：在实际应用中，可能还需要处理异常情况、确保线程安全等。 这个示例仅用于演示观察者模式的基本概念和用法。
+```
+
+12、**中介者模式（Mediator）**：用一个中介对象来封装一系列的对象交互，中介者使各对象不需要显式地相互引用，从而降低耦合度。  
+
+首先，定义一个抽象中介者接口：
+
+```
+public interface Mediator  
+{  
+    void Register(Colleague colleague);  
+    void Unregister(Colleague colleague);  
+    void NotifyColleagues(string message);  
+}
+```
+
+然后，定义一个具体中介者类：
+
+```
+public class ConcreteMediator : Mediator  
+{  
+    private readonly List<Colleague> _colleagues = new List<Colleague>();  
+    public void Register(Colleague colleague)  
+    {  
+        _colleagues.Add(colleague);  
+    }  
+    public void Unregister(Colleague colleague)  
+    {  
+        _colleagues.Remove(colleague);  
+    }  
+    public void NotifyColleagues(string message)  
+    {  
+        foreach (var colleague in _colleagues)  
+        {  
+            colleague.HandleMessage(message);  
+        }  
+    }  
+}
+```
+
+接着，定义一个抽象同事接口：
+
+```
+public interface Colleague  
+{  
+    void HandleMessage(string message);  
+}
+```
+
+再定义一个具体的同事类：
+
+```
+public class ConcreteColleague : Colleague  
+{  
+    private readonly string _name;  
+    public ConcreteColleague(string name)  
+    {  
+        _name = name;  
+    }  
+    public void HandleMessage(string message)  
+    {  
+        Console.WriteLine($"{_name} received message: {message}");  
+    }  
+}
+```
+
+最后，在客户端代码中使用中介者和同事对象：
+
+```
+public class ClientCode : Program  
+{  
+    static void Main(string[] args)  
+    {  
+        var mediator = new ConcreteMediator(); // 创建中介者对象。 输出：Alice received message: Hi! 输出：Bob received message: Hi! 输出：Eve received message: Hi! // 当某个同事接收到消息时，它会通知其他同事。 输出：Alice received message: Update! 输出：Bob received message: Update! 输出：Eve received message: Update! // 中介者负责协调各个同事的行为。 输出：Alice received message: Goodbye! 输出：Bob received message: Goodbye! 输出：Eve received message: Goodbye! // 当某个同事需要与另一个同事通信时，它不再直接与其通信，而是通过中介者来转发消息。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               }   
+    }  
+}
+```
+
+13、**代理模式（Proxy）**：为其他对象提供一种代理以控制对这个对象的访问。  
+
+首先，定义一个接口：
+
+```
+public interface IImage  
+{  
+    void Load();  
+    void Display();  
+}
+```
+
+然后，定义一个具体类：
+
+```
+public class Image : IImage  
+{  
+    public void Load()  
+    {  
+        Console.WriteLine("图片正在加载...");  
+    }  
+    public void Display()  
+    {  
+        Console.WriteLine("图片正在显示...");  
+    }  
+}
+```
+
+接着，定义一个代理类：
+
+```
+public class ImageProxy : IImage  
+{  
+    private readonly IImage _image;  
+    public ImageProxy(IImage image)  
+    {  
+        _image = image;  
+    }  
+    public void Load()  
+    {  
+        Console.WriteLine("图片开始加载...");  
+        _image.Load();  
+        Console.WriteLine("图片加载完成！");  
+    }  
+    public void Display()  
+    {  
+        Console.WriteLine("图片开始显示...");  
+        _image.Display();  
+        Console.WriteLine("图片显示完成！");  
+    }  
+}
+```
+
+最后，在客户端代码中使用代理类：
+
+```
+public class ClientCode : Program  
+{  
+    static void Main(string[] args)  
+    {  
+        IImage image = new ImageProxy(new Image()); // 创建代理对象。 输出：图片开始加载... 输出：图片正在加载... 输出：图片加载完成！ 输出：图片开始显示... 输出：图片正在显示... 输出：图片显示完成！ // 通过代理对象调用方法时，会在方法调用前后添加额外的操作。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 // 代理类可以用来控制对具体类的访问，例如添加日志记录、性能监控等。 输出：图片开始加载... 输出：图片正在加载... 输出：图片加载完成！ // 当不再需要访问具体类时，可以只删除代理类，而保留具体类。这样既实现了代码的解耦，又保持了代码的完整性。 输出：图片开始显示... 输出：图片正在显示... 输出：图片显示完成！ // 代理类可以提供比具体类更强大、灵活的功能，例如缓存、事务处理等。 // 代理类可以扩展接口，为其他对象提供额外的功能。 输出：图片开始加载... 输出：图片正在加载... 输出：图片加载完成！ // 代理类可以控制对具体类的访问，例如只允许特定用户访问或限制访问次数。 // 代理类可以用于远程对象，使得客户端可以通过代理访问远程服务器的对象。 输出：图片开始显示... 输出：图片正在显示... 输出：图片显示完成！ // 代理类可以用于实现安全控制，例如对特定方法的访问进行限制。 // 代理类可以用于简化复杂对象的访问，例如将一个复杂对象分解为多个代理对象。 // 代理类可以实现缓存机制，提高系统的性能和响应速度。 // 代理类可以实现事件驱动机制，使得对象之间的通信更加灵活和高效。   // 代理类可以控制对具体类的访问，例如只允许特定用户访问或限制访问次数。 // 当客户端不再需要访问具体类时，可以只删除代理类，而保留具体类。这样既实现了代码的解耦，又保持了代码的完整性。 // 当客户端需要多次访问同一个具体类时，可以使用同一个代理对象来减少创建代理对象的开销。 // 当客户端需要访问多个具体类时，可以将它们封装在一个代理对象中，以便于管理和维护。 // 当客户端需要实现安全控制时，可以使用代理模式来限制对具体类的访问。 // 当客户端需要简化复杂对象的访问时，可以使用代理模式来将一个复杂对象分解为多个代理对象。 // 当客户端需要实现缓存机制时，可以使用代理模式来提高系统的性能和响应速度。 // 当客户端需要实现事件驱动机制时，可以使用代理模式来使得对象之间的通信更加灵活和高效。  // 当客户端需要实现远程访问时，可以使用代理模式来封装远程服务器的地址和通信协议。 // 当客户端需要实现日志记录或性能监控时，可以使用代理模式来在调用方法前后添加额外的操作。  // 当客户端需要实现事务处理时，可以使用代理模式来保证多个操作的一致性和完整性。  // 当客户端需要实现缓存机制时，可以使用代理模式来提高系统的性能和响应速度。  // 当客户端需要实现事件驱动机制时，可以使用代理模式来使得对象
+```
+
+14、**迭代器模式（Iterator）**：提供一种方法顺序访问一个聚合对象中的各个元素，而又不暴露该对象的内部表示。  
+
+首先，定义一个聚合类，这里我们用`Collection`表示：
+
+```
+public class Collection<T>  
+{  
+    private List<T> items = new List<T>();  
+  
+    public void Add(T item)  
+{  
+        items.Add(item);  
+    }  
+  
+    public void Remove(T item)  
+{  
+        items.Remove(item);  
+    }  
+  
+    public IEnumerator<T> GetEnumerator()  
+    {  
+        return items.GetEnumerator();  
+    }  
+}
+```
+
+接着，我们创建一个迭代器接口`IIterator<T>`：
+
+```
+public interface IIterator<T> : IDisposable  
+{  
+    bool HasNext { get; }  
+    T Next();  
+}
+```
+
+然后，在`Collection<T>`类中实现该接口：
+
+```
+public class CollectionIterator : IIterator<T>  
+{  
+    private IEnumerator<T> enumerator;  
+    private bool disposed = false;  
+    private Collection<T> collection;  
+    private int currentIndex = -1;  
+    private int count = 0;  
+    private int endIndex = -1;  
+    private bool hasNext;  
+    private T nextItem;  
+    private bool nextValid;  
+    private T previousItem;  
+    private bool shouldStop = false; // stop if requested through dispose or Next method.   
+    private bool started = false; // has the iterator started iterating?   
+    private bool valid = false; // Is the current item valid?   
+    
+    public CollectionIterator(Collection<T> collection)   
+{   
+        this.collection = collection;   
+        enumerator = collection.GetEnumerator();   
+        nextValid = enumerator.MoveNext();   
+        valid = nextValid;   
+        currentIndex++;   
+        started = true;   
+        endIndex = collection.Count - 1;   
+        count = collection.Count;   
+        hasNext = (count > 0);   
+        shouldStop = false;   
+        disposed = false;   
+    }   
+    
+    public bool HasNext   
+    {   
+        get { return hasNext; }   
+    }   
+    
+    public T Next()   
+{   
+        if (disposed) throw new ObjectDisposedException("The iterator has been disposed.");   
+        if (!valid) throw new InvalidOperationException("The iterator is in an invalid state.");   
+        if (!shouldStop) return nextItem;   
+        throw new InvalidOperationException("The iterator has been stopped.");   
+    }   
+    
+    public void Dispose()   
+{   
+        disposed = true;   
+        enumerator.Dispose();   
+        shouldStop = true;   
+    }   
+}
+```
+
+15、**组合模式（Composite）**：将对象组合成树形结构以表示 “部分 - 整体” 的层次结构，使得客户端以统一的方式处理单个对象以及对象的组合。  
+
+首先，定义一个组件接口`IComponent`：
+
+```
+public interface IComponent  
+{  
+    void Operation();  
+}
+```
+
+然后，我们为叶节点和复合节点定义不同的类：
+
+```
+public class Leaf : IComponent  
+{  
+    private readonly string name;  
+  
+    public Leaf(string name)  
+    {  
+        this.name = name;  
+    }  
+  
+    public void Operation()  
+    {  
+        Console.WriteLine($"Leaf {name} operation.");  
+    }  
+}  
+  
+public class Composite : IComponent  
+{  
+    private readonly List<IComponent> children = new List<IComponent>();  
+  
+    public void Add(IComponent component)  
+    {  
+        children.Add(component);  
+    }  
+  
+    public void Remove(IComponent component)  
+    {  
+        children.Remove(component);  
+    }  
+  
+    public void Operation()  
+    {  
+        foreach (var child in children)  
+        {  
+            child.Operation();  
+        }  
+    }  
+}
+```
+
+接着，我们可以创建一个客户端程序来使用这些组件：
+
+```
+public class ClientProgram  
+{  
+    public static void Main(string[] args)  
+    {  
+        var composite = new Composite(); // 创建一个复合对象（容器）  
+        composite.Add(new Leaf("Leaf A")); // 向复合对象中添加叶节点对象（叶子）  
+        composite.Add(new Leaf("Leaf B")); // 向复合对象中添加叶节点对象（叶子）  
+        composite.Add(new Composite()); // 向复合对象中添加另一个复合对象（容器）  
+        composite.Add(new Leaf("Leaf C")); // 向复合对象中添加叶节点对象（叶子）  
+        composite.Add(new Leaf("Leaf D")); // 向复合对象中添加叶节点对象（叶子）  
+        composite.Operation(); // 操作复合对象，递归地操作其所有子组件（叶节点和复合节点）  
+    }  
+}
+```
+
+16、**状态模式（State）**：允许一个对象在其内部状态改变时改变它的行为。  
+
+首先，定义一个状态接口：
+
+```
+public interface IState  
+{  
+    void Handle(Context context);  
+}
+```
+
+然后，定义几种不同的状态类，这些类实现了状态接口：
+
+```
+public class StateA : IState  
+{  
+    public void Handle(Context context)  
+    {  
+        Console.WriteLine("Handling State A");  
+        // 切换到StateB  
+        context.State = new StateB();  
+    }  
+}  
+  
+public class StateB : IState  
+{  
+    public void Handle(Context context)  
+    {  
+        Console.WriteLine("Handling State B");  
+        // 切换回StateA  
+        context.State = new StateA();  
+    }  
+}
+```
+
+接着，定义一个上下文类，它持有一个状态对象：
+
+```
+public class Context  
+{  
+    private IState _state;  
+    public IState State { get { return _state; } set { _state = value; } }  
+    
+    public Context(IState state)   
+    {   
+        _state = state;   
+    }   
+    
+    public void Request()   
+    {   
+        _state.Handle(this);   
+    }   
+}
+```
+
+最后，创建一个客户端程序来使用这些类：
+
+```
+public class ClientProgram  
+{  
+    public static void Main(string[] args)  
+    {  
+        Context context = new Context(new StateA()); // 创建Context并设置初始状态为StateA  
+        for (int i = 0; i < 3; i++) // 执行3次请求，会依次处理StateA、StateB、再回到StateA，形成循环切换状态的效果。  
+        {  
+            context.Request(); // 调用Request方法来执行请求，该方法会触发状态的切换和状态处理逻辑。  
+        }  
+    }  
+}
+```
+
+17、**策略模式（Strategy）**：定义一系列的算法，将每一个算法封装起来，并且使它们可以相互替换。  
+
+首先，定义一个接口`ISortStrategy`，表示排序算法的策略：
+
+```
+public interface ISortStrategy  
+{  
+    void Sort(List<int> list);  
+}
+```
+
+然后，定义几种不同的排序策略类，这些类实现了`ISortStrategy`接口：
+
+```
+public class BubbleSortStrategy : ISortStrategy  
+{  
+    public void Sort(List<int> list)  
+{  
+        Console.WriteLine("Sorting using Bubble Sort");  
+        // 实现冒泡排序算法  
+        // ...  
+    }  
+}  
+  
+public class QuickSortStrategy : ISortStrategy  
+{  
+    public void Sort(List<int> list)  
+{  
+        Console.WriteLine("Sorting using Quick Sort");  
+        // 实现快速排序算法  
+        // ...  
+    }  
+}
+```
+
+接着，定义一个上下文类`Context`，它持有一个排序策略对象：
+
+```
+public class Context  
+{  
+    private ISortStrategy _sortStrategy;  
+    public ISortStrategy SortStrategy { get { return _sortStrategy; } set { _sortStrategy = value; } }  
+    
+    public Context(ISortStrategy sortStrategy)   
+    {   
+        _sortStrategy = sortStrategy;   
+    }   
+    
+    public void Sort(List<int> list)   
+    {   
+        _sortStrategy.Sort(list);   
+    }   
+}
+```
+
+最后，创建一个客户端程序来使用这些类：
+
+```
+public class ClientProgram  
+{  
+    public static void Main(string[] args)  
+    {  
+        Context context = new Context(new QuickSortStrategy()); // 创建Context并设置初始排序策略为QuickSortStrategy  
+        List<int> numbers = new List<int> { 5, 2, 9, 1, 5, 6 }; // 需要排序的数字列表  
+        context.Sort(numbers); // 调用Sort方法来执行排序，该方法会触发排序算法的执行。  
+    }  
+}
+```
+
+18、**模板方法模式（Template Method）**：定义一个操作中的算法骨架，将某些步骤延迟到子类中实现。  
+
+首先，定义一个抽象类`AbstractClass`，它包含一个模板方法`TemplateMethod`：
+
+```
+public abstract class AbstractClass  
+{  
+    public void TemplateMethod()  
+    {  
+        // 算法骨架  
+        PrimitiveOperation1();  
+        PrimitiveOperation2();  
+        // ...  
+    }  
+    
+    public abstract void PrimitiveOperation1(); // 原始操作1  
+    
+    public abstract void PrimitiveOperation2(); // 原始操作2  
+}
+```
+
+然后，创建两个继承自`AbstractClass`的具体类，实现这些抽象方法：
+
+```
+public class ConcreteClassA : AbstractClass  
+{  
+    public override void PrimitiveOperation1()  
+    {  
+        Console.WriteLine("ConcreteClassA: PrimitiveOperation1");  
+    }  
+    
+    public override void PrimitiveOperation2()  
+    {  
+        Console.WriteLine("ConcreteClassA: PrimitiveOperation2");  
+    }  
+}  
+    
+public class ConcreteClassB : AbstractClass  
+{  
+    public override void PrimitiveOperation1()  
+    {  
+        Console.WriteLine("ConcreteClassB: PrimitiveOperation1");  
+    }  
+    
+    public override void PrimitiveOperation2()  
+    {  
+        Console.WriteLine("ConcreteClassB: PrimitiveOperation2");  
+    }  
+}
+```
+
+最后，创建一个客户端程序来使用这些类：
+
+```
+public class ClientProgram  
+{  
+    public static void Main(string[] args)  
+    {  
+        AbstractClass abstractClass = new ConcreteClassA(); // 创建AbstractClass的实例，使用ConcreteClassA实现PrimitiveOperation1和PrimitiveOperation2方法。  
+        abstractClass.TemplateMethod(); // 调用TemplateMethod方法，该方法会依次调用PrimitiveOperation1和PrimitiveOperation2方法。  
+    
+        abstractClass = new ConcreteClassB(); // 创建另一个AbstractClass的实例，使用ConcreteClassB实现PrimitiveOperation1和PrimitiveOperation2方法。  
+        abstractClass.TemplateMethod(); // 再次调用TemplateMethod方法，这次会使用ConcreteClassB的实现。  
+    }  
+}
+```
+
+19、**职责链模式（Chain of Responsibility）**：使多个对象都有机会处理请求，从而避免请求的发送者和接收者之间的耦合关系。  
+
+首先，定义一个抽象的处理器接口`IHandler`，它包含了处理请求的方法：
+
+```
+public interface IHandler  
+{  
+    bool CanHandle(string request);  
+    void Handle(string request);  
+}
+```
+
+然后，创建几个实现这个接口的具体处理器类：
+
+```
+public class HandlerA : IHandler  
+{  
+    public bool CanHandle(string request)  
+    {  
+        return request.StartsWith("A");  
+    }  
+    
+    public void Handle(string request)  
+    {  
+        Console.WriteLine($"HandlerA handles: {request}");  
+    }  
+}  
+    
+public class HandlerB : IHandler  
+{  
+    public bool CanHandle(string request)  
+    {  
+        return request.StartsWith("B");  
+    }  
+    
+    public void Handle(string request)  
+    {  
+        Console.WriteLine($"HandlerB handles: {request}");  
+    }  
+}  
+    
+public class HandlerC : IHandler  
+{  
+    public bool CanHandle(string request)  
+    {  
+        return request.StartsWith("C");  
+    }  
+    
+    public void Handle(string request)  
+    {  
+        Console.WriteLine($"HandlerC handles: {request}");  
+    }  
+}
+```
+
+接着，创建一个请求类`Request`，它包含了请求的字符串：
+
+```
+public class Request  
+{  
+    public string RequestString { get; set; }  
+}
+```
+
+最后，创建一个客户端程序来使用这些类：
+
+```
+public class ClientProgram  
+{  
+    public static void Main(string[] args)  
+    {  
+        var handlerChain = new List<IHandler> { new HandlerA(), new HandlerB(), new HandlerC() }; // 创建职责链，将处理器按顺序连接起来。  
+    
+        var request = new Request { RequestString = "A_specific_request" }; // 创建请求对象。  
+    
+        var handler = handlerChain.FirstOrDefault(h => h.CanHandle(request.RequestString)); // 查找第一个可以处理请求的处理器。  
+        if (handler != null) // 如果找到了可以处理的处理器。  
+        {  
+            handler.Handle(request.RequestString); // 调用处理器的Handle方法处理请求。如果没有找到可以处理的处理器，那么请求将被忽略。  
+        }  
+        else // 如果所有处理器都不能处理请求。  
+        {  
+            Console.WriteLine("No handler found to handle the request."); // 输出一条消息表示没有找到处理请求的处理器。  
+        }  
+    }  
+}
+```
+
+20、**备忘录模式（Memento）**：在不破坏封装的前提下捕获一个对象的内部状态，并在该对象之外保存这个状态。
+
+首先，定义一个需要保存状态的类`Originator`：
+
+```
+public class Originator  
+{  
+    public string State { get; set; }  
+    
+    public void SetState(string state)  
+    {  
+        State = state;  
+    }  
+    
+    public Memento SaveToMemento()  
+    {  
+        return new Memento(State);  
+    }  
+    
+    public void RestoreFromMemento(Memento memento)  
+    {  
+        State = memento.GetSavedState();  
+    }  
+}
+```
+
+然后，定义一个备忘录类`Memento`，它包含了原对象的内部状态：
+
+```
+public class Memento  
+{  
+    private readonly string _state;  
+    
+    public Memento(string state)  
+    {  
+        _state = state;  
+    }  
+    
+    public string GetSavedState()  
+    {  
+        return _state;  
+    }  
+}
+```
+
+接着，定义一个可以保存和恢复原对象状态的类`Caretaker`：
+
+```
+public class Caretaker  
+{  
+    private Memento _memento;  
+    
+    public Memento GetMemento()  
+    {  
+        return _memento;  
+    }  
+    
+    public void SetMemento(Memento memento)  
+    {  
+        _memento = memento;  
+    }  
+}
+```
+
+最后，创建一个客户端程序来使用这些类：
+
+```
+public class ClientProgram  
+{  
+    public static void Main(string[] args)  
+    {  
+        Originator originator = new Originator(); // 创建原对象。  
+        originator.setState("Initial State"); // 设置原对象的初始状态。  
+    
+        Caretaker caretaker = new Caretaker(); // 创建备忘录持有者。  
+        caretaker.SetMemento(originator.SaveToMemento()); // 将原对象的当前状态保存到备忘录中。  
+    
+        originator.setState("New State"); // 改变原对象的内部状态。现在我们需要将原对象恢复到先前的状态。首先从备忘录持有者中获取备忘录。然后使用备忘录恢复原对象的先前状态。最后将备忘录放回备忘录持有者中。这是为了防止在恢复状态后丢失备忘录。如果将备忘录丢弃，那么就无法再次将原对象恢复到先前状态。通过这种方式，我们可以确保在需要时可以多次恢复原对象的状态。  
+    
+        originator.RestoreFromMemento(caretaker.GetMemento()); // 恢复原对象的先前状态。现在原对象的内部状态应该与先前状态相同。如果没有任何问题，那么原对象的内部状态应该为"Initial State"。如果没有成功恢复原对象的状态，那么将抛出异常或返回一个无效的状态。这是为了确保在恢复状态时不会发生错误或意外情况。如果无法恢复状态，那么应该采取适当的措施来处理这种情况，例如记录错误信息或采取其他必要的操作。
+```
+
+21、**解释器模式（Interpreter）**：定义一个解释器类，该类解析并执行一种简单的语法结构。  
+
+首先，定义一个抽象的表达式接口`AbstractExpression`，它描述了表达式的操作：
+
+```
+public abstract class AbstractExpression  
+{  
+    public abstract int Interpret();  
+}
+```
+
+然后，创建几个实现这个接口的具体表达式类：
+
+```
+public class ConcreteExpressionA : AbstractExpression  
+{  
+    public override int Interpret()  
+    {  
+        return 1; // 具体实现  
+    }  
+}  
+    
+public class ConcreteExpressionB : AbstractExpression  
+{  
+    public override int Interpret()  
+    {  
+        return 2; // 具体实现  
+    }  
+}  
+    
+public class ConcreteExpressionC : AbstractExpression  
+{  
+    public override int Interpret()  
+    {  
+        return 3; // 具体实现  
+    }  
+}
+```
+
+接着，创建一个解释器类`Interpreter`，它使用表达式来执行特定的操作：
+
+```
+public class Interpreter  
+{  
+    private List<AbstractExpression> _expressions;  
+    
+    public Interpreter()  
+    {  
+        _expressions = new List<AbstractExpression>(); // 创建表达式列表。  
+    }  
+    
+    public void AddExpression(AbstractExpression expression)  
+    {  
+        _expressions.Add(expression); // 将表达式添加到列表中。  
+    }  
+    
+    public int Interpret() // 解释所有表达式并返回结果。  
+    {  
+        foreach (var expression in _expressions)  
+        {  
+            expression.Interpret(); // 解释每个表达式。如果表达式有返回值，则将其添加到结果中。如果没有返回值，则忽略它。最后返回结果。如果没有任何表达式被解释，则返回默认值或抛出异常。这取决于具体实现。根据具体需求，可以修改此行为。如果需要在解释表达式时处理错误或异常情况，则可以在解释每个表达式之前或之后添加适当的错误处理代码。如果需要在解释表达式时执行其他操作，例如计算表达式之间的依赖关系或执行其他逻辑，则可以在解释每个表达式之前或之后添加适当的逻辑代码。解释器模式提供了构建和解释表达式的框架，但具体的实现细节可以根据具体需求进行修改和扩展。
+        }
+    }
+ }
+```
+
+22、**观察者模式（Observer）**：定义了对象之间的一对多依赖关系，当一个对象的状态发生改变时，所有依赖于它的对象都会得到通知并被自动更新。  
+
+首先，定义一个抽象的观察者接口`IObserver`，它描述了观察者的行为：
+
+```
+public interface IObserver  
+{  
+    void Update(string message);  
+}
+```
+
+然后，创建几个实现这个接口的具体观察者类：
+
+```
+public class ConcreteObserverA : IObserver  
+{  
+    public void Update(string message)  
+    {  
+        Console.WriteLine("ConcreteObserverA received: " + message);  
+    }  
+}  
+    
+public class ConcreteObserverB : IObserver  
+{  
+    public void Update(string message)  
+    {  
+        Console.WriteLine("ConcreteObserverB received: " + message);  
+    }  
+}  
+    
+public class ConcreteObserverC : IObserver  
+{  
+    public void Update(string message)  
+    {  
+        Console.WriteLine("ConcreteObserverC received: " + message);  
+    }  
+}
+```
+
+接着，定义一个抽象的被观察者接口`IObservable`，它描述了被观察者的行为：
+
+```
+public interface IObservable  
+{  
+    void Register(IObserver observer);  
+    void Unregister(IObserver observer);  
+    void NotifyObservers();  
+}
+```
+
+然后，创建几个实现这个接口的具体被观察者类：
+
+```
+public class ConcreteObservable : IObservable  
+{  
+    private List<IObserver> _observers; // 存储观察者的列表。  
+    private string _state; // 存储被观察者的状态。  
+    
+    public ConcreteObservable() // 构造函数。初始化观察者列表和状态。  
+    {  
+        _observers = new List<IObserver>(); // 创建观察者列表。  
+        _state = string.Empty; // 初始化状态。根据具体需求，可以设置不同的初始值。如果不需要初始化状态，则可以省略此步骤。如果需要在被观察者对象创建时立即注册观察者，则可以在构造函数中调用 Register 方法。如果需要在稍后注册观察者，则可以在其他方法中调用 Register 方法。如果需要在某个时刻取消注册观察者，则可以调用 Unregister 方法。如果需要在被观察者对象销毁时取消注册所有观察者，则可以在析构函数中调用 Unregister 方法。如果需要在被观察者状态改变时通知所有观察者，则可以调用 NotifyObservers 方法。根据具体需求，可以修改这些方法的实现细节。如果需要在通知观察者之前或之后执行其他操作，例如记录日志或执行其他逻辑，则可以在这些方法中添加适当的代码。根据具体需求，可以扩展这个示例以包括更多观察者和被观察者类，以及更复杂的状态和行为。
+        }
+        }
+```
+
+23、**访问者模式（Visitor）**：将数据操作与数据结构分离，使得同一组操作可以作用于不同的数据结构。  
+
+首先，定义一个抽象的访问者接口`IVisitor`，它描述了访问者的操作：
+
+```
+public interface IVisitor  
+{  
+    void Visit(ConcreteElementA element);  
+    void Visit(ConcreteElementB element);  
+    void Visit(ConcreteElementC element);  
+}
+```
+
+然后，创建几个实现这个接口的具体访问者类：
+
+```
+public class ConcreteVisitorA : IVisitor  
+{  
+    public void Visit(ConcreteElementA element)  
+    {  
+        Console.WriteLine("ConcreteVisitorA visited ConcreteElementA");  
+        // 具体实现访问操作  
+    }  
+    
+    public void Visit(ConcreteElementB element)  
+    {  
+        Console.WriteLine("ConcreteVisitorA visited ConcreteElementB");  
+        // 具体实现访问操作  
+    }  
+    
+    public void Visit(ConcreteElementC element)  
+    {  
+        Console.WriteLine("ConcreteVisitorA visited ConcreteElementC");  
+        // 具体实现访问操作  
+    }  
+}  
+    
+public class ConcreteVisitorB : IVisitor  
+{  
+    public void Visit(ConcreteElementA element)  
+    {  
+        Console.WriteLine("ConcreteVisitorB visited ConcreteElementA");  
+        // 具体实现访问操作  
+    }  
+    
+    public void Visit(ConcreteElementB element)  
+    {  
+        Console.WriteLine("ConcreteVisitorB visited ConcreteElementB");  
+        // 具体实现访问操作  
+    }  
+    
+    public void Visit(ConcreteElementC element)  
+    {  
+        Console.WriteLine("ConcreteVisitorB visited ConcreteElementC");  
+        // 具体实现访问操作  
+    }  
+}
+```
+
+接着，定义一个抽象的元素接口`IElement`，它描述了元素的行为：
+
+```
+public interface IElement   
+{  
+    void Accept(IVisitor visitor); // 接受访问者并执行相应操作。具体实现由具体的元素类负责。这是访问者模式的核心。通过这种方式，可以灵活地添加新的操作而无需修改已有的元素类。可以根据需要扩展这个接口以包含其他方法或属性。根据具体需求，也可以使用其他方式来实现接受访问者并执行相应操作的功能，例如使用回调函数或事件等。如果需要在元素类中存储额外的状态信息，则可以在接口中添加相应的属性或方法。如果需要在元素类中执行其他操作或逻辑，则可以在接口中添加相应的方法或属性，并在实现类中实现它们。根据具体需求，可以修改这个接口的名称、方法数量、参数和返回类型等细节。如果需要在元素类中执行多个操作或逻辑，则可以将它们封装在一个单独的方法中，并在该方法中调用Accept方法。这样可以简化代码并提高可读性。如果需要在元素类中执行多个操作或逻辑，则可以使用继承和多态等技术来组织代码。这样可以提高代码的可维护性和可扩展性。根据具体需求，可以扩展这个示例以包括更多元素类和访问者类，以及更复杂的状态和行为。
+}
+```
+
+- ![](https://mmbiz.qpic.cn/mmbiz_gif/Ljib4So7yuWhV286BqNMwDMKWbMic75en4IFH3HQqFtoiau9PLcbwvKEBlkUJqs3k2WCCm7Vbv39dcUDNN1dPy7hA/640?wx_fmt=gif&wxfrom=5&wx_lazy=1) -
+
+看完本文有收获？请转发分享给更多人
+
+推荐关注「CSharp 精选营」，提升编程技能 
+
+推荐阅读  点击标题可跳转
+
+*   [CPF C# 跨平台 UI 框架开源了](http://mp.weixin.qq.com/s?__biz=Mzg2MDEwMTE1Mw==&mid=2247485771&idx=1&sn=fd8330c3d310f2a03b20666f05784452&chksm=ce2ac605f95d4f132a0da27e651414f08a27aeae4ceb4fafee47a51726627ca7fd4e617b7375&scene=21#wechat_redirect)
+    
+*   [C# Dump](http://mp.weixin.qq.com/s?__biz=Mzg2MDEwMTE1Mw==&mid=2247485823&idx=1&sn=e3d0b0b2ce9d1355699f4a5f4a442c48&chksm=ce2ac631f95d4f27807e5bedaeedac13bc82efb3ae91f87b4787a711fecd55deddabc2d690ca&scene=21#wechat_redirect)
+    
+*   [C# 异步代码导致阻塞及解决办法](http://mp.weixin.qq.com/s?__biz=Mzg2MDEwMTE1Mw==&mid=2247485858&idx=1&sn=42fc114e823f9e397f24037170f466a3&chksm=ce2ac6ecf95d4ffa826ed1a75af7562baba402694e349bb71fde226279f1697cec204f34263e&scene=21#wechat_redirect)
+    
+*   [一个基于. NETCore 开发的开源访客系统](http://mp.weixin.qq.com/s?__biz=Mzg2MDEwMTE1Mw==&mid=2247485899&idx=1&sn=af9ebca8d30ce1f0e62148d5020d45ee&chksm=ce2ac685f95d4f93435cf16db918efa9e869c554a8ab4bd26ab22daf7cd12f28128dd5a466c1&scene=21#wechat_redirect)
+    
+*   [.NET 主流 ORM 功能介绍 大全 最新](http://mp.weixin.qq.com/s?__biz=Mzg2MDEwMTE1Mw==&mid=2247485955&idx=1&sn=7b073aa98cd9ef0e229a8e025d00b1b8&chksm=ce2ac54df95d4c5beb066c84e8049ff8cb0e2a169ccb51afee148d1d5dabf237dc86161e9227&scene=21#wechat_redirect)
+    
+*   [Git 详细使用教程（新手必看）！](http://mp.weixin.qq.com/s?__biz=Mzg2MDEwMTE1Mw==&mid=2247486032&idx=1&sn=5c78194b36802bb4bd71bbdf868b1f02&chksm=ce2ac51ef95d4c0836f9dbaeb93efaea13741cc8c383fd9f8123a28e663c7456a7e9affd75b3&scene=21#wechat_redirect)
+    
+*   [C# 读取 Excel 文件的几种方法【总结整理】](http://mp.weixin.qq.com/s?__biz=Mzg2MDEwMTE1Mw==&mid=2247486062&idx=1&sn=b1332ac25a764e21c9cee17672c2bb41&chksm=ce2ac520f95d4c366806457f376d88d4befa760b441c57ef83b7e22a3ffe8c55b710aa839653&scene=21#wechat_redirect)
+    
+*   [浅谈 sqlserver2008 和 sqlserver2014 的区别](http://mp.weixin.qq.com/s?__biz=Mzg2MDEwMTE1Mw==&mid=2247486269&idx=1&sn=580614420c444d6ba6d49e22df3f2ff3&chksm=ce2ac473f95d4d650256ef82b0054aa594bbabe5e74bc4df71732562ccc74d26f62eedd9ccf2&scene=21#wechat_redirect)
+    
+*   [C# 多种实现异步编程的方式及优缺点](http://mp.weixin.qq.com/s?__biz=Mzg2MDEwMTE1Mw==&mid=2247486304&idx=1&sn=8a83a1cf68a19ccb8e4637b10b0ad9f9&chksm=ce2ac42ef95d4d385b89090effe3576cb1d2ce7da5ddd54da03a278ab7672c4906eceafd003b&scene=21#wechat_redirect)
+    
+
+**建群声明：**本着技术在于分享，方便大家交流学习的初心，特此建立**【CSharp 技术交流群】**，热烈欢迎各位进群交流学习编程心得，也希望进群的大佬能不吝分享自己遇到的技术问题和经验。
+
+扫码入群
+
+长按识别二维码
+
+添加微信好友备注 “入群”
+
+![](https://mmbiz.qpic.cn/sz_mmbiz_jpg/zrjP7da7BLYNQbGtY4nttt6Aq3QugPP4lNRP59icYzdvnqPVN7kKGGrUYbXiaOxSQNfJJWSYb1EDksEh1ibzsBV8g/640?wx_fmt=jpeg&wxfrom=5&wx_lazy=1&wx_co=1)
+
+![](https://mmbiz.qpic.cn/mmbiz_jpg/Vtf2wZNabHCNFqhaS3jlRN82iafVavcOpaFn6ZrPpEMEicyZLpYnay0ueGY6j6hRt1rfyKicmDrasw5VwzB7CeEkg/640?wx_fmt=jpeg&wxfrom=5&wx_lazy=1&wx_co=1)  
+
+点赞和在看就是最大的支持❤️
