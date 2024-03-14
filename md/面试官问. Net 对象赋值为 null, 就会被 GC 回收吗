@@ -1,0 +1,53 @@
+> 本文由 [简悦 SimpRead](http://ksria.com/simpread/) 转码， 原文地址 [mp.weixin.qq.com](https://mp.weixin.qq.com/s?__biz=Mzg5NDYwNjU4MA==&mid=2247485350&idx=1&sn=6a19a00f7f86bc5802d06c99556d2a19&chksm=c01c4a3df76bc32b63f8d2530a044e8e1fc82ebfd98ddeb5002799e992e3108037ed9ad52db3&scene=21#wechat_redirect)
+
+**1. 前言**  
+一个小伙伴的私信: 面试的时候, 面试官问一个对象把它赋值为 null, 就会被 GC 回收吗？很显然是不会的，为什么会出现这种情况？来看下这个问题。
+
+**2. 概述**  
+示例代码:
+
+```
+internal class Program{
+    static void Main(string[] args){
+        Program pm = new Program();
+        Console.WriteLine("Hello World");
+        GC.SuppressFinalize(pm);//这句是废话
+        pm = null;
+        GC.Collect(0);//默认的GC垃圾回收器
+        Console.ReadLine();
+    }
+    ~Program(){
+        Console.WriteLine("调用了析构函数");
+    }
+}
+```
+
+被 GC 回收的条件是这个对象不再存活 (也就是没有被标记为 1), 但是 pm 对象是根 (局部引用对象)，所以它是存活的 (标记为 1)。是不会被垃圾回收的。
+
+但是如果把 pm=null 呢？同样的它也不会被 GC 回收，为什么呢？
+
+首先看下这段代码，GC.SuppressFinalize 不运行 pm 对象的析构函数，因为这段程序本身就不执行，所以这句代码可有可无。这句代码的后面是 pm=null，以及垃圾回收。
+
+**二. 原理**  
+在我们 new Program 的时候，它会被调用两次。一次是快速或者慢速分配内存及入栈，此步骤完成之后，会调用. Ctor 在进行再一次对象 (pm) 入栈。所以这里我们看到 new 一个对象实际上进行了两次入栈。如下代码:
+
+```
+Program pm = new Program();
+00007FFF587306DC 48 B9 40 ED 7E 58 FF 7F 00 00 mov         rcx,7FFF587EED40h  
+00007FFF587306E6 E8 15 48 A0 5F       call        00007FFFB8134F00  
+00007FFF587306EB 48 89 45 30          mov         qword ptr [rbp+30h],rax  
+00007FFF587306EF 48 8B 4D 30          mov         rcx,qword ptr [rbp+30h]
+
+Program.Ctor
+00007FFF587306F3 E8 68 9F 0D 00       call        ConsoleApp1.Test+Program..ctor() (07FFF5880A660h)  
+00007FFF587306F8 48 8B 4D 30          mov         rcx,qword ptr [rbp+30h]  
+00007FFF587306FC 48 89 4D 38          mov         qword ptr [rbp+38h],rcx
+```
+
+[rbp+30h]和 [rbp+38h] 存放了 pm 对象指针。而 pm=null, 只赋值给了后面的栈也就是 [rbp+38h]，[rbp+30h] 还是保持原样的存储了 pm 对象的指针。
+
+在进行 GC 垃圾回收的时候，ReportStackSlotToGC 函数会循环遍历 rbp 寄存器的偏移 0x30 和 0x38, 然后对它进行标记存活。偏移的 0x38 固然是 null，但偏移的 0x30 则不是。所以，pm 对象依然会被 GC 进行标记存活。
+
+**三: 总结**
+
+面试官如果问这个问题，正确的回答是: 面试官你好，我认为不能被回收的。原因在于，pm 对象是根对象，它本身是不能够被 GC 回收的。如果把 pm 赋值为 null，也不能被回收。原因在于 pm 的 null 被赋值给了. Ctor 默认构造函数的指针。而不是 pm 实例指针。即使单独赋值给了 pm 实例指针也是不行的，需要. Ctor 和 pm 实例指针同时为 null 才可以被 GC 回收。所以个人认为它不会被 GC 回收。
