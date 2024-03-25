@@ -29,8 +29,48 @@
 
 下面是一个简单的反射使用示例，演示了如何获取类型信息、创建对象实例、调用方法以及获取和设置字段值：
 
-```
-using System;using System.Reflection;public class MyClass{    public int MyField;    public MyClass()    {        MyField = 42;    }    public void MyMethod()    {        Console.WriteLine("Hello from MyMethod!");    }}class Program{    static void Main()    {        // 获取类型信息        Type type = typeof(MyClass);        // 动态创建对象实例        object obj = Activator.CreateInstance(type);        // 获取字段信息并设置值        FieldInfo field = type.GetField("MyField");        field.SetValue(obj, 100);        // 调用方法        MethodInfo method = type.GetMethod("MyMethod");        method.Invoke(obj, null);        // 获取字段值并输出        int value = (int)field.GetValue(obj);        Console.WriteLine($"MyField value: {value}");    }}
+```c#
+using System;
+using System.Reflection;
+
+public class MyClass
+{
+    public int MyField;
+
+    public MyClass()
+    {
+        MyField = 42;
+    }
+
+    public void MyMethod()
+    {
+        Console.WriteLine("Hello from MyMethod!");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        // 获取类型信息
+        Type type = typeof(MyClass);
+
+        // 动态创建对象实例
+        object obj = Activator.CreateInstance(type);
+
+        // 获取字段信息并设置值
+        FieldInfo field = type.GetField("MyField");
+        field.SetValue(obj, 100);
+
+        // 调用方法
+        MethodInfo method = type.GetMethod("MyMethod");
+        method.Invoke(obj, null);
+
+        // 获取字段值并输出
+        int value = (int)field.GetValue(obj);
+        Console.WriteLine($"MyField value: {value}");
+    }
+}
 ```
 
 在上面的代码中，我们首先获取了`MyClass`的类型信息，然后动态创建了一个`MyClass`的实例。接着，我们通过反射获取了`MyField`字段的信息，并设置了它的值。之后，我们调用了`MyMethod`方法，并最后获取并输出了`MyField`字段的新值。
