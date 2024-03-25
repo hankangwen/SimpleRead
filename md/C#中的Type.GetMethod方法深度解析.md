@@ -66,7 +66,35 @@
 下面是一个简单的示例，演示如何使用`GetMethod`方法来获取并调用一个类的方法：
 
 ```
-using System;using System.Reflection;public class MyClass{    public void MyMethod(int a, string b)    {        Console.WriteLine("MyMethod called with a = " + a + ", b = " + b);    }}class Program{    static void Main()    {        Type type = typeof(MyClass);        MethodInfo methodInfo = type.GetMethod("MyMethod", new Type[] { typeof(int), typeof(string) });                if (methodInfo != null)        {            MyClass myClassInstance = new MyClass();            methodInfo.Invoke(myClassInstance, new object[] { 123, "Hello" });        }        else        {            Console.WriteLine("Method not found.");        }    }}
+using System;
+using System.Reflection;
+
+public class MyClass
+{
+    public void MyMethod(int a, string b)
+    {
+        Console.WriteLine("MyMethod called with a = " + a + ", b = " + b);
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Type type = typeof(MyClass);
+        MethodInfo methodInfo = type.GetMethod("MyMethod", new Type[] { typeof(int), typeof(string) });
+        
+        if (methodInfo != null)
+        {
+            MyClass myClassInstance = new MyClass();
+            methodInfo.Invoke(myClassInstance, new object[] { 123, "Hello" });
+        }
+        else
+        {
+            Console.WriteLine("Method not found.");
+        }
+    }
+}
 ```
 
 在上面的示例中，我们首先通过`typeof`操作符获取`MyClass`类型的`Type`对象，然后使用`GetMethod`方法根据方法名称和参数类型获取`MyMethod`方法的`MethodInfo`对象。最后，我们创建了一个`MyClass`的实例，并使用`MethodInfo`对象的`Invoke`方法调用了该方法。
