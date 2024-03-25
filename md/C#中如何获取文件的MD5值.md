@@ -6,22 +6,49 @@
 
 首先，我们需要引入必要的命名空间：
 
-```
-using System;using System.IO;using System.Security.Cryptography;using System.Text;
+```c#
+using System;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 ```
 
 然后，我们可以创建一个方法，用于计算文件的 MD5 值：
 
-```
-public static string GetFileMD5Hash(string filePath){    try    {        using (FileStream stream = File.OpenRead(filePath))        {            MD5 md5 = MD5.Create();            byte[] hashValue = md5.ComputeHash(stream);            // 将字节数组转换为十六进制字符串            StringBuilder hex = new StringBuilder(hashValue.Length * 2);            foreach (byte b in hashValue)            {                hex.AppendFormat("{0:x2}", b);            }            return hex.ToString();        }    }    catch (Exception ex)    {        throw new Exception("Error computing MD5 hash for file " + filePath, ex);    }}
+```c#
+public static string GetFileMD5Hash(string filePath)
+{
+    try
+    {
+        using (FileStream stream = File.OpenRead(filePath))
+        {
+            MD5 md5 = MD5.Create();
+            byte[] hashValue = md5.ComputeHash(stream);
+
+            // 将字节数组转换为十六进制字符串
+            StringBuilder hex = new StringBuilder(hashValue.Length * 2);
+            foreach (byte b in hashValue)
+            {
+                hex.AppendFormat("{0:x2}", b);
+            }
+            return hex.ToString();
+        }
+    }
+    catch (Exception ex)
+    {
+        throw new Exception("Error computing MD5 hash for file " + filePath, ex);
+    }
+}
 ```
 
 在这个方法中，我们首先使用`File.OpenRead`方法打开文件，并创建一个`MD5`的实例。然后，我们调用`ComputeHash`方法计算文件的散列值，得到一个字节数组。最后，我们将这个字节数组转换为一个十六进制字符串，这就是文件的 MD5 值。
 
 现在，你可以调用这个方法并传入文件的路径来获取文件的 MD5 值：
 
-```
-string filePath = @"C:\path\to\your\file.txt";string md5Hash = GetFileMD5Hash(filePath);Console.WriteLine("The MD5 hash of the file is: " + md5Hash);
+```c#
+string filePath = @"C:\path\to\your\file.txt";
+string md5Hash = GetFileMD5Hash(filePath);
+Console.WriteLine("The MD5 hash of the file is: " + md5Hash);
 ```
 
 请注意，虽然 MD5 在过去被广泛使用，但由于存在碰撞问题（即两个不同的输入可能产生相同的 MD5 值），现在对于安全性要求较高的场景，更推荐使用 SHA-256 或其他更安全的哈希算法。但是，对于一般的文件完整性校验，MD5 仍然是一个简单且有效的选择。
