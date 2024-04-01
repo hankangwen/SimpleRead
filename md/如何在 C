@@ -1,0 +1,42 @@
+> 本文由 [简悦 SimpRead](http://ksria.com/simpread/) 转码， 原文地址 [mp.weixin.qq.com](https://mp.weixin.qq.com/s/ShGxK_6JywPQLwCntbo35Q)
+
+在 C# 中，有时我们需要在类的属性发生变化时执行某些操作，比如验证数据、触发通知或记录日志。为了实现这一功能，我们通常需要一种机制来检测属性的变化，并获取关于这些变化的信息。在 C# 中，可以通过多种方法来实现这一目标，其中包括使用 INotifyPropertyChanged 接口、自定义属性以及 AOP（面向切面编程）技术。
+
+**1. 使用 INotifyPropertyChanged 接口**
+
+`INotifyPropertyChanged`接口是. NET Framework 提供的一个标准接口，用于在属性值发生变化时通知客户端。实现这个接口的类需要定义一个名为`PropertyChanged`的事件，当属性值发生变化时触发这个事件。
+
+```
+public class MyModel : INotifyPropertyChanged{    private string _propertyName;    public string PropertyName    {        get { return _propertyName; }        set        {            if (_propertyName != value)            {                _propertyName = value;                OnPropertyChanged(nameof(PropertyName));            }        }    }    public event PropertyChangedEventHandler PropertyChanged;    protected virtual void OnPropertyChanged(string propertyName)    {        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));    }}
+```
+
+在这个例子中，当`PropertyName`发生变化时，`OnPropertyChanged`方法会被调用，并触发`PropertyChanged`事件。订阅这个事件的任何对象都会收到通知，并可以获取到发生变化的属性名称。
+
+**2. 自定义属性**
+
+如果你想更精细地控制属性的变化追踪，可以通过创建自定义属性来实现。这通常涉及到使用 AOP（面向切面编程）技术，如使用 PostSharp 或 Aspect.NET 等库。
+
+下面是一个使用自定义属性的简单示例：
+
+```
+public class ObservableProperty<T>{    private T _value;    public T Value    {        get { return _value; }        set        {            if (!EqualityComparer<T>.Default.Equals(_value, value))            {                _value = value;                OnValueChanged();            }        }    }    public event Action<T> ValueChanged;    protected virtual void OnValueChanged()    {        ValueChanged?.Invoke(Value);    }}public class MyModel{    public ObservableProperty<string> PropertyName { get; set; } = new ObservableProperty<string>();}
+```
+
+在这个例子中，`ObservableProperty<T>`类封装了一个值，并在值发生变化时触发`ValueChanged`事件。`MyModel`类使用这个自定义属性来追踪`PropertyName`的变化。
+
+**3. 使用 AOP（面向切面编程）**
+
+AOP 是一种编程范式，允许程序员在不修改现有代码的情况下定义横切关注点，比如日志、事务管理和安全性。通过使用 AOP 库，可以创建切面来拦截属性的 getter 和 setter 方法，从而在属性值发生变化时执行额外的逻辑。
+
+**4. 注意事项**
+
+*   性能考虑：频繁触发属性变化通知可能会对性能产生影响，特别是在大型对象图或高频更新的场景中。
+    
+*   线程安全：如果在多线程环境中使用属性变化通知，需要确保事件触发和订阅操作的线程安全。
+    
+*   通知粒度：根据需要选择合适的通知粒度。有时，你可能只想在特定属性的值发生变化时得到通知，而不是每次任何属性变化时都得到通知。
+    
+
+**结论**
+
+C# 提供了多种方法来获取类中发生数据变化的属性信息。选择哪种方法取决于你的具体需求，比如是否需要细粒度的控制、是否需要跨多个类或方法的通用解决方案，以及你对性能和复杂性的权衡。通过结合这些技术，你可以创建更加健壮和灵活的应用程序，这些应用程序能够响应数据变化并相应地更新其状态和行为。
