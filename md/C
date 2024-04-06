@@ -1,0 +1,155 @@
+> 本文由 [简悦 SimpRead](http://ksria.com/simpread/) 转码， 原文地址 [mp.weixin.qq.com](https://mp.weixin.qq.com/s/VZuqaZofiYhFzVnXhl3AFg)
+
+![](https://mmbiz.qpic.cn/mmbiz_jpg/akKQoQTbJ6iaMbs7RBJmjVLBwLGvAFZkjZFaXRaGUnVEia9Cl1FAuvOVGUZOPVA4nu5RgfNk6LRmILBkuWMS02AQ/640?wx_fmt=other&from=appmsg)  
+
+概述：C# 中的匿名类型是无名类型，它允许您将一组只读属性捆绑到单个对象中，而无需事先显式定义类型。若要创建匿名对象，可以使用 “new” 关键字并在大括号中指定所需的属性。在这里，我们创建了一个具有三个属性的匿名类型：字符串类型的 “Name”、字符串类型的“State” 和 int 类型的“Age”。var employee = new { Name = Jack, State = Boston, Age = 43 }; Console.WriteLine($This person's name is {employee.Name}, he lives in {employee.State} an
+
+C# 中的匿名类型是无名类型，它允许您将一组只读属性捆绑到单个对象中，而无需事先显式定义类型。
+
+若要创建匿名对象，可以使用 “new” 关键字并在大括号中指定所需的属性。在这里，我们创建了一个具有三个属性的匿名类型：字符串类型的 “Name”、字符串类型的“State” 和 int 类型的“Age”。
+
+```
+var employee = new { Name = "Jack", State = "Boston", Age = 43 };    Console.WriteLine($"This person's name is {employee.Name}, he lives in {employee.State} and is {employee.Age} years old.");
+```
+
+![](https://mmbiz.qpic.cn/mmbiz_jpg/akKQoQTbJ6iaMbs7RBJmjVLBwLGvAFZkjFD8P0LZqdJMaj3KRpeAt7tNoRgRiaXXQlFBicB49EPDv3TnJn6nmIpkA/640?wx_fmt=other&from=appmsg)
+
+代码的结果
+
+匿名类型的属性是只读的，这意味着您不能在代码中修改它们：
+
+![](https://mmbiz.qpic.cn/mmbiz_jpg/akKQoQTbJ6iaMbs7RBJmjVLBwLGvAFZkjTuN4wD5icO8XP9zFMgrG4FIArvYhOXYUSV8mCdKyodwETZBrZEcIq6Q/640?wx_fmt=other&from=appmsg)
+
+匿名类型是只读的
+
+让我们考虑一个简单的编码挑战，以更好地了解匿名类型的用途。
+
+首先，我们为'Pet' 定义一个类：
+
+```
+internal class Pet      {          public string Name { get; set; }          public PetTypes Type { get; set; }          public int Age { get; set; }            public Pet(string name, PetTypes type, int age)          {              Name = name;              Type = type;              Age = age;          }      }
+```
+
+然后，我们为 “PetType” 定义一个枚举：
+
+```
+internal enum PetTypes      {          Dog,          Cat      }
+```
+
+接下来，我们创建一个 “宠物” 集合：
+
+```
+var pets = new[]  {      new Pet("Hannibal", PetTypes.Dog, 12),      new Pet("Black", PetTypes.Cat, 8),      new Pet("White", PetTypes.Dog, 4),      new Pet("Red", PetTypes.Dog, 7),      new Pet("Pink", PetTypes.Dog, 7),      new Pet("Brown", PetTypes.Dog, 7)  };
+```
+
+每只宠物都有名称、类型和年龄。
+
+我们想要做的是构建一个字符串集合，其中包含有关每种宠物类型的数据以及所选类型宠物的平均年龄。
+
+我们将使用 LINQ 来执行此操作。我们需要按类型对这些宠物进行分组，然后，对于每个组，我们可以计算平均年龄：
+
+```
+var averageWeightsData = pets      .GroupBy(pet => pet.Type)      .Select(grouping => grouping.Average(pet => pet.Age));        foreach (var item in averageWeightsData)  {      Console.WriteLine(item);  }
+```
+
+这就是我想要的，但有一个问题。
+
+![](https://mmbiz.qpic.cn/mmbiz_jpg/akKQoQTbJ6iaMbs7RBJmjVLBwLGvAFZkjMuvmgMZzRqITZwUB5gEWdykticicpOMibFZMRqhr9HzuzKhIhoUHqibCgw/640?wx_fmt=other&from=appmsg)
+
+每种类型的平均年龄
+
+我们只选择了每个组的平均年龄，丢失了有关每个组名称的信息。
+
+我想显示宠物的类型和平均年龄。
+
+我现在该怎么办？
+
+要同时显示宠物类型和平均年龄，创建类、结构或记录将是一个可能的解决方案。
+
+但是，对于这种特定情况，这可能有点矫枉过正。
+
+我将为这个非常具体的数据创建一个新类。我可能永远不会在不同的上下文中使用它。
+
+因此，必须有更好的解决方案。
+
+在这一点上，匿名类型再次出现。
+
+让我们继续阅读...
+
+答案是使用匿名类型。
+
+匿名类型是一种在需要它的地方精确定义的类型，甚至没有给它一个名字。
+
+它非常适合像我们这样的用例——类型很小且是临时的，我们不打算在其他任何地方使用它。 因此，让我们根据需要修改代码。
+
+```
+var averageWeightsData = pets      .GroupBy(pet => pet.Type)      .Select(grouping => new      {          Type = grouping.Key,          AgeAverage = grouping.Average(pet=>pet.Age)      })      .OrderBy(data => data.AgeAverage);      foreach (var item in averageWeightsData)  {      Console.WriteLine($"Average age for type {item.Type} is {item.AgeAverage}");  }
+```
+
+修改后的代码的结果如下所示。
+
+![](https://mmbiz.qpic.cn/mmbiz_jpg/akKQoQTbJ6iaMbs7RBJmjVLBwLGvAFZkj6RkvfBFGthIV7xpBia0sIiaB6uKFyGu17mqKDmNiaGp9VpEx4t8D9Yoxw/640?wx_fmt=other&from=appmsg)
+
+修改代码的结果
+
+通过在我们的代码中使用匿名类型，我们达到了预期的结果。
+
+如何在不同的代码中使用匿名类型？
+----------------
+
+在我们的例子中，正如你所看到的，匿名类型没有名称。因此，我们不可能在其他任何地方使用它。
+
+如果我们不知道它的名字，我们怎么能提到它呢？
+
+实际上，编译器给它起了一个在通用中间语言中可以看到的名称，但即使我们使用反编译器来查找它，也无法使用它。
+
+为了满足你的好奇心，我检查了编译器是如何命名这个特定类型的：
+
+![](https://mmbiz.qpic.cn/mmbiz_jpg/akKQoQTbJ6iaMbs7RBJmjVLBwLGvAFZkjce4gbUJbu918DMKDHLPSpDKUHIlUqPibTQ5LXptY4lZvQyKlib34TwYA/640?wx_fmt=other&from=appmsg)
+
+公共中间语言给出的匿名类型的名称
+
+匿名类型的名称位于顶部。正如你所看到的，它的可读性不是很强。请注意，从公共语言运行库的角度来看，匿名类型与任何其他类型没有什么不同。
+
+匿名类型具有几个关键特征：
+-------------
+
+*   它们仅包含只读属性，
+    
+*   其他类型的类成员（如方法或事件）均无效
+    
+*   如果没有为匿名类型的属性指定名称，编译器将使用用于设置匿名类型属性值的属性的名称。
+    
+*   匿名类型是类对象，直接派生自 System.Object。
+    
+*   它们不能被强制转换为任何其他类型的类型。
+    
+*   它们重写 Equals 和 GetHashCode 方法以支持基于值的相等。两个具有相同值的匿名对象将具有相同的哈希码，并且 Equals 方法将为它们返回 true。请注意，== 运算符没有重载，因此它将返回 false（因为它们的引用不同）。
+    
+*   它们支持带有 “with” 关键字的非破坏性突变。请记住：非破坏性突变不是改变原始对象，而是创建一个具有更改值的新对象。请查看下面的示例代码。
+    
+
+```
+var someData = new { number = 5, text = "My name is Ozkan'" };  var changedData = someData with { number = 10 };    Console.WriteLine($"SomeData values: number = {someData.number}, text = {someData.text}) \n");  Console.WriteLine($"ChangedData values: number = {changedData.number}, text = {changedData.text})");
+```
+
+代码的结果是：
+
+![](https://mmbiz.qpic.cn/mmbiz_jpg/akKQoQTbJ6iaMbs7RBJmjVLBwLGvAFZkjFkGjuBGAibcDShrAfsZsUjJ6Lbg7WSXSdrrrN7BGWbZZGcS9D13eibBA/640?wx_fmt=other&from=appmsg)
+
+我们可以修改匿名类型属性的值吗？
+----------------
+
+不。匿名类型的所有属性都是只读的。
+
+我们什么时候应该使用匿名类型，什么时候不应该使用匿名类型？
+-----------------------------
+
+匿名类型的最佳用例是，我们想要使用的类型是简单的，并且是某些特定上下文的本地类型，并且不会在其他任何地方使用。它经常用作复杂 LINQ 查询中的临时对象。如果类型很复杂，或者我们想重用它，它不应该是匿名的。此外，匿名类型只能提供只读属性; 它们不能有方法、字段、事件等，所以如果我们需要这些功能中的任何一个，匿名类型将不适合我们。
+
+匿名类型是值类型还是引用类型？
+---------------
+
+它们是引用类型，因为它们是类，但它们使用 Equals 方法支持基于值的 Equality。换言之，Equals 方法将两个具有相同属性值的匿名对象视为相等，即使它们的引用不同。
+
+**如果你喜欢我的文章，请给我一个赞！谢谢**
