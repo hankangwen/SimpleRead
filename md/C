@@ -1,0 +1,217 @@
+> 本文由 [简悦 SimpRead](http://ksria.com/simpread/) 转码， 原文地址 [mp.weixin.qq.com](https://mp.weixin.qq.com/s/BTCvMSH3PWyLAvTO1hGaJw)
+
+> 转自：天空的湛蓝
+> 
+> cnblogs.com/zhan520g/p/11014918.html
+
+**1、正确操作字符串**
+
+*   拼接字符串一定要考虑使用 StringBuilder , 默认长度为 16, 实际看情况设置。
+    
+*   StringBuilder 本质：是以非托管方式分配内存。
+    
+*   同时 StringFormat 方法内部也是使用 StringBuilder 进行字符串格式化。
+    
+
+**2、使用默认转型方法**
+
+类型的转换运算符 : 每个类型内部都有一个方法 (运算符), 分为隐式转换和显示转换。
+
+自己实现隐式转换：
+
+```
+puclic static implicit operator Ip(string ip) {      Ip iptemp=new Ip(ip)；      return iptemp;}
+```
+
+1.  使用类型内置的 Parse、TryParse、 ToString、ToDouble、 ToDateTime
+    
+2.  使用帮助类提供的方法：System.Convert 类、 System.BitConverter 类来进行类型的转换。
+    
+3.  使用 CLR 支持的类型：父类和子类之间的转换。
+    
+
+**3、区别对待强制转型与 as 和 is**
+
+为了编译更强壮的代码，建议更常使用 as 和 is
+
+**什么时候使用 as**
+
+如果类型之间都上溯到了某个共同的基类，那么根据此基类进行的转型（即基类转型为子类本身）应该使用 as。子类与子类之间的转型，则应该提供转换操作符，以便进行强制转型。
+
+as 操作符永远不会抛出异常，如果类型不匹配（被转换对象的运行时类型既不是所转换的目标类型，也不是其派生类型），或者转型的源对象为 null，那么转型之后的值也为 null。
+
+**什么时候使用 is**
+
+as 操作符有一个问题，即它不能操作基元类型。如果涉及基元类型的算法，就需要通过 is 转型前的类型来进行判断，以避免转型失败。
+
+**4、TryParse 比 Parse 好**
+
+这个肯定好，不说了。安全
+
+**5、使用 int? 来确保值类型也可以为 null**
+
+基元类型为什么需要为 null？考虑两个场景：
+
+*   数据库支持整数可为空
+    
+*   数据在传输过程中存在丢失问题，导致传过来的值为 null
+    
+
+**写法：int ? i=null;**
+
+语法 T? 是 Nullable＜T＞的简写，两者可以相互转换。可以为 null 的类型表示其基础值类型正常范围内的值再加上一个 null 值。例如，Nullable＜Int32＞，其值的范围为 - 2 147 483 648～2 147 483 647，再加上一个 null 值。
+
+**？经常和？？配合使用，比如：**
+
+```
+int?i=123;int j=i??0;
+```
+
+**6、区别 readonly 和 const 的使用方法**
+
+使用 const 的理由只有一个，那就是效率。之所以说 const 变量的效率高，是因为经过编译器编译后，我们在代码中引用 const 变量的地方会用 const 变量所对应的实际值来代替。比如：const=100, const 和 100 被使用的时候是等价，const 自带 static 光圈。
+
+const 和 readonly 的本质区别如下：
+
+*   const 是编译期常量，readonly 是运行期常量
+    
+*   const 只能修饰基元类型、枚举类型或字符串类型，readonly 没有限制。
+    
+
+**注意：**在构造方法内，可以多次对 readonly 赋值。即在初始化的时候。
+
+**7、将 0 值作为枚举的默认值**
+
+允许使用的枚举类型有 byte、sbyte、short、ushort、int、uint、long 和 ulong。应该始终将 0 值作为枚举类型的默认值。不过，这样做不是因为允许使用的枚举类型在声明时的默认值是 0 值，而是有工程上的意义。
+
+既然枚举类型从 0 开始，这样可以避免一个星期多出来一个 0 值。
+
+**8、避免给枚举类型的元素提供显式的值**
+
+不要给枚举设定值。有时候有某些增加的需要，会为枚举添加元素，在这个时候，就像我们为枚举增加元素 ValueTemp 一样，极有可能会一不小心增加一个无效值。
+
+**9、习惯重载运算符**
+
+比如：Salary familyIncome=mikeIncome+roseIncome; 阅读一目了然。通过使用 opera-tor 关键字定义静态成员函数来重载运算符，让开发人员可以像使用内置基元类型一样使用该类型。
+
+**10、创建对象时需要考虑是否实现比较器**
+
+有特殊需要比较的时候就考虑。集合排序比较通过 linq 也可以解决。
+
+**11、区别对待 == 和 Equals**
+
+无论是操作符 “==” 还是方法“Equals”，都倾向于表达这样一个原则：
+
+*   对于值类型，如果类型的值相等，就应该返回 True。
+    
+*   对于引用类型，如果类型指向同一个对象，则返回 True。
+    
+
+**注意** 
+
+*   由于操作符 “==” 和“Equals”方法从语法实现上来说，都可以被重载为表示 “值相等性” 和“引用相等性”。所以，为了明确有一种方法肯定比较的是“引用相等性”，FCL 中提供了 Object.ReferenceEquals 方法。该方法比较的是：两个示例是否是同一个示例。  
+    
+*   对于 string 这样一个特殊的引用类型，微软觉得它的现实意义更接近于值类型，所以，在 FCL 中，string 的比较被重载为针对 “类型的值” 的比较，而不是针对 “引用本身” 的比较。
+    
+
+**12、重写 Equals 时也要重写 GetHashCode**
+
+除非考虑到自定义类型会被用作基于散列的集合的键值；否则，不建议重写 Equals 方法，因为这会带来一系列的问题。
+
+集合找到值的时候本质上是先去 查找 HashCode, 然后才查找该对象来比较 Equals
+
+**注意：**重写 Equals 方法的同时，也应该实现一个类型安全的接口 IEquatable＜T＞，比如 ：class Person:IEquatable
+
+**13、为类型输出格式化字符串**
+
+有两种方法可以为类型提供格式化的字符串输出。
+
+*   一种是意识到类型会产生格式化字符串输出，于是让类型继承接口 IFormattable。这对类型来说，是一种主动实现的方式，要求开发者可以预见类型在格式化方面的要求。
+    
+*   更多的时候，类型的使用者需为类型自定义格式化器，这就是第二种方法，也是最灵活多变的方法，可以根据需求的变化为类型提供多个格式化器。
+    
+
+一个典型的格式化器应该继承接口 IFormatProvider 和 ICustomFomatter
+
+**14、正确实现浅拷贝和深拷贝**
+
+**浅拷贝**　
+
+将对象中的所有字段复制到新的对象（副本）中。其中，值类型字段的值被复制到副本中后，在副本中的修改不会影响到源对象对应的值。而引用类型的字段被复制到副本中的是引用类型的引用，而不是引用的对象，在副本中对引用类型的字段值做修改会影响到源对象本身。
+
+**深拷贝** 
+
+同样，将对象中的所有字段复制到新的对象中。不过，无论是对象的值类型字段，还是引用类型字段，都会被重新创建并赋值，对于副本的修改，不会影响到源对象本身。
+
+无论是浅拷贝还是深拷贝，微软都建议用类型继承 IClone-able 接口的方式明确告诉调用者：该类型可以被拷贝。当然，ICloneable 接口只提供了一个声明为 Clone 的方法，我们可以根据需求在 Clone 方法内实现浅拷贝或深拷贝。
+
+一个简单的浅拷贝的实现代码如下所示：
+
+```
+class Employee:ICloneable{           public string IDCode {get;set;}          public int Age {get;set;  }       public Department Department{get;set;}        #region ICloneable成员     public object Clone()     {            return this.MemberwiseClone();     }     #endregion}class Department{        public string Name {get;set;}       public override string ToString()     {           return this.Name;      }}
+```
+
+注意到 Employee 的 IDCode 属性是 string 类型。理论上 string 类型是引用类型，但是由于该引用类型的特殊性（无论是实现还是语义），Object.MemberwiseClone 方法仍旧为其创建了副本。也就是说，在浅拷贝过程，我们应该将字符串看成是值类型。
+
+一个简单的深拷贝实现样例如下 (建议使用序列化的形式来进行深拷贝)
+
+```
+class Employee:ICloneable{     public string IDCode{get;set;}    public int Age{get;set;}     public Department Department{get;set;}    #region ICloneable成员    public object Clone()    {         using(Stream objectStream=new MemoryStream())        {             IFormatter formatter=new BinaryFormatter();             formatter.Serialize(objectStream,this);             objectStream.Seek(0,SeekOrigin.Begin);             return formatter.Deserialize(objectStream)as Employee;        }   }    #endregion}
+```
+
+**同时实现深拷贝和浅拷贝**
+
+由于接口 ICloneable 只有一个模棱两可的 Clone 方法，所以，如果要在一个类中同时实现深拷贝和浅拷贝，只能由我们自己实现两个额外的方法，声明为 DeepClone 和 Shallow。Em-ployee 的最终版本看起来应该像如下的形式：
+
+```
+[Serializable]class Employee:ICloneable{    public string IDCode{get;set;}     public int Age{get;set;}     public Department Department{get;set;}    #region ICloneable成员     public object Clone()    {         return this.MemberwiseClone();    }    #endregion    public Employee DeepClone()     {            using(Stream objectStream=new MemoryStream())         {                   IFormatter formatter=new BinaryFormatter();       formatter.Serialize(objectStream,this);                   objectStream.Seek(0,SeekOrigin.Begin);                   return formatter.Deserialize(objectStream)as Employee;           }    }    public Employee ShallowClone()     {            return Clone()as Employee;       }}
+```
+
+**15、利用 dynamic 来简化反射实现**
+
+dynamic 是 Framework 4.0 的新特性。dynamic 的出现让 C# 具有了弱语言类型的特性。编译器在编译的时候不再对类型进行检查，编译器默认 dynamic 对象支持开发者想要的任何特性。
+
+比如，即使你对 GetDynamicObject 方法返回的对象一无所知，也可以像如下这样进行代码的调用，编译器不会报错：
+
+```
+dynamic dynamicObject=GetDynamicObject();Console.WriteLine(dynamicObject.Name);Console.WriteLine(dynamicObject.SampleMethod());
+```
+
+当然，如果运行时 dynamicObject 不包含指定的这些特性（如上文中带返回值的方法 SampleMethod），运行时程序会抛出一个 RuntimeBinderException 异常：“System.Dynamic.ExpandoObject”未包含 “Sam-pleMethod” 的定义。
+
+**var 与 dynamic 有巨大的区别**
+
+*   var 是编译器的语法糖
+    
+*   dynamic 是运行时解析，在编译期时，编译器不对其做任何检查。
+    
+
+**反射使用**
+
+*   不使用 dynamic 方式
+    
+
+```
+DynamicSample  dynamicSample=new  DynamicSample();var addMethod=typeof(DynamicSample).GetMethod("Add");int re=(int)addMethod.Invoke(dynamicSample,new object[] {1,2});
+```
+
+*   使用 dynamic 方式
+    
+
+```
+dynamic dynamicSample2=new DynamicSample();int re2=dynamicSample2.Add(1,2);//在使用dynamic后，代码看上去更简洁了，并且在可控的范围内减少了一次拆箱的机会。经验证，频繁使用的时候，消耗时间更少
+```
+
+**建议：**始终使用 dynamic 来简化反射实现。
+
+**总结**
+
+在大部分应用情况下，“效率” 并没有那么高的地位，灵活性更重要。在部分情况下，“灵活性” 并没有那么高的地位，效率最重要。
+
+****版权声明：本文来源于网友收集或网友提供，仅供学习交流之用，如果有侵权，请转告版主或者留言，本公众号立即删除。****
+
+进群学习交流加 : mm1552923
+
+如果喜欢我的文章，那么  
+
+“在看” 和转发是对我最大的支持！
