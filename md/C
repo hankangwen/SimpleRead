@@ -1,0 +1,32 @@
+> 本文由 [简悦 SimpRead](http://ksria.com/simpread/) 转码， 原文地址 [mp.weixin.qq.com](https://mp.weixin.qq.com/s/-MtDDALHgTqoEx10H4K-qQ)
+
+**一、引言**  
+
+在 C# 编程语言中，`static`是一个非常重要的关键字，它在不同的上下文中有不同的用途。本文将深入探讨`static`在 C# 中的多重用途，并通过实际代码示例来阐释其在实际编程中的应用。
+
+**二、static 关键字的基本用途和特性**
+
+1.  **静态字段和方法**： 在 C# 中，使用`static`关键字声明的字段或方法属于类本身，而不是类的实例。这意味着，无需创建类的对象即可访问静态成员。静态方法只能访问静态字段或其他静态方法，不能直接访问类的非静态字段或方法。
+    
+2.  **静态构造函数**： 静态构造函数是在创建类的任何实例或引用任何静态成员之前，自动执行的特殊类型的构造函数。静态构造函数不能带访问修饰符或具有参数。
+    
+3.  **静态类**： 一个静态类只能包含静态成员，并且不能被实例化。静态类通常用于提供工具函数或方法，如 Math 类就是一个典型的静态类。
+    
+
+**三、示例代码**
+
+**示例 1：静态方法和字段**
+
+```
+public class Counter{    // 静态字段，记录已创建Counter对象的数量    public static int InstanceCount { get; private set; } = 0;    // 构造函数    public Counter()    {        // 每次创建Counter实例时，静态字段InstanceCount增加        InstanceCount++;    }    // 静态方法，用于获取当前已创建的Counter对象数量    public static int GetCurrentCount()    {        return InstanceCount;    }}class Program{    static void Main()    {        // 无需创建Counter的实例即可调用静态方法        Console.WriteLine("Before creating instances: " + Counter.GetCurrentCount());                // 创建Counter的实例        Counter c1 = new Counter();        Counter c2 = new Counter();        Counter c3 = new Counter();                // 再次调用静态方法，无需创建新的Counter实例        Console.WriteLine("After creating 3 instances: " + Counter.GetCurrentCount());    }}
+```
+
+**示例 2：静态类**
+
+```
+// 静态工具类，包含一些数学计算的静态方法public static class MathUtils{    // 静态方法，计算两个整数的最大值    public static int Max(int a, int b)    {        return (a > b) ? a : b;    }        // 静态方法，计算矩形面积    public static double RectangleArea(double length, double width)    {        return length * width;    }}class Program{    static void Main()    {        int max = MathUtils.Max(10, 20); // 使用静态类中的静态方法        double area = MathUtils.RectangleArea(5.0, 8.0); // 同样使用静态类中的静态方法        Console.WriteLine($"Max value is {max}, Rectangle area is {area}");    }}
+```
+
+**四、结论**
+
+`static`关键字在 C# 编程中扮演着重要角色，它允许我们定义不依赖于类实例的字段和方法。通过合理地使用`static`，我们可以创建出更加高效且结构清晰的代码。静态方法和静态类特别适用于那些无需维护对象状态的功能，如工具函数或配置信息的访问等。通过上面的示例代码，我们可以看到`static`在实际项目中的广泛应用和实用性。
