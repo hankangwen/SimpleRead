@@ -1,5 +1,11 @@
 > 本文由 [简悦 SimpRead](http://ksria.com/simpread/) 转码， 原文地址 [zhuanlan.zhihu.com](https://zhuanlan.zhihu.com/p/125109062)
 
+<iframe width="100%" height="475" src="https://dotnetfiddle.net/Widget/7tX8vL" frameborder="0"></iframe>
+
+
+
+<iframe width="100%" height="475" src="https://dotnetfiddle.net/Widget/CsCons" frameborder="0"></iframe>
+
 一、资源路径
 ------
 
